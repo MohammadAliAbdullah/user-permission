@@ -117,7 +117,7 @@ final class Auth
             return self::$permCache = [];
         }
         $rows = Database::select(
-            'SELECT DISTINCT rp.LINK_ID, p.ACTION_KEY
+            'SELECT DISTINCT p.LINK_ID, p.ACTION_KEY
              FROM role_permissions rp
              JOIN permissions p ON p.PERMISSION_ID = rp.PERMISSION_ID AND p.ACTIVE_STATUS = 1
              WHERE rp.USERGRP_ID IN (SELECT USERGRP_ID FROM user_roles WHERE USER_ID = ? AND ACTIVE_STATUS = 1)

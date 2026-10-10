@@ -53,7 +53,7 @@
         Dashboard
       </a>
 
-      <?php foreach ($menu as $grp): ?>
+      <?php foreach (($menu ?? []) as $grp): ?>
         <?php $key = 'm' . $grp['module']['MODULE_ID']; ?>
         <div class="mt-1">
           <button @click="openGrp['<?= $key ?>'] = !openGrp['<?= $key ?>']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
@@ -64,20 +64,23 @@
             <svg class="h-4 w-4 transition" :class="openGrp['<?= $key ?>'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
           </button>
           <ul x-show="openGrp['<?= $key ?>']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
-            <?php $renderItems = function (array $items) use (&$renderItems, $active) { ?>
-              <?php foreach ($items as $node): $l = $node['link']; ?>
-                <li>
-                  <?php if ($node['children']): ?>
-                    <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400"><?= e($l['LINK_NAME']) ?></span>
-                    <ul class="ml-2 border-l border-slate-100 pl-2"><?php $renderItems($node['children']); ?></ul>
-                  <?php else: ?>
-                    <a href="<?= url('page.php?link=' . (int)$l['LINK_ID']) ?>"
-                       class="block truncate rounded px-2 py-1.5 <?= ($currentLink ?? 0) === (int)$l['LINK_ID'] ? 'bg-brand-50 text-brand-700 font-medium' : 'text-slate-600 hover:bg-slate-50' ?>"
-                       title="<?= e($l['LINK_NAME']) ?>"><?= e($l['LINK_NAME']) ?></a>
-                  <?php endif; ?>
-                </li>
-              <?php endforeach; ?>
-            <?php }; $renderItems($grp['items']); ?>
+            <?php
+              $renderItems = function (array $items) use (&$renderItems, $currentLink) {
+                  foreach ($items as $node): $l = $node['link']; ?>
+                    <li>
+                      <?php if ($node['children']): ?>
+                        <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400"><?= e($l['LINK_NAME']) ?></span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2"><?php $renderItems($node['children']); ?></ul>
+                      <?php else: ?>
+                        <a href="<?= url('page.php?link=' . (int)$l['LINK_ID']) ?>"
+                           class="block truncate rounded px-2 py-1.5 <?= ((int)($currentLink ?? 0)) === (int)$l['LINK_ID'] ? 'bg-brand-50 text-brand-700 font-medium' : 'text-slate-600 hover:bg-slate-50' ?>"
+                           title="<?= e($l['LINK_NAME']) ?>"><?= e($l['LINK_NAME']) ?></a>
+                      <?php endif; ?>
+                    </li>
+              <?php   endforeach;
+              };
+              $renderItems($grp['items']);
+            ?>
           </ul>
         </div>
       <?php endforeach; ?>
@@ -96,12 +99,14 @@
 
   <main class="pt-16 <?= isset($standalone) ? '' : 'lg:pl-72' ?>">
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-      <?php foreach (['success'=>'emerald','error'=>'rose','info'=>'sky'] as $type => $color):
-            foreach (['ok'=>$type] as $_): endforeach;
+      <?php foreach (['success' => 'emerald', 'error' => 'rose', 'info' => 'sky'] as $type => $color):
             $msgs = $_SESSION['_flash'][$type] ?? [];
-            foreach ($msgs as $m): unset($_SESSION['_flash'][$type]); ?>
+            if (!$msgs) continue;
+            unset($_SESSION['_flash'][$type]);
+            foreach ($msgs as $m): ?>
         <div class="mb-4 rounded-lg border border-<?= $color ?>-200 bg-<?= $color ?>-50 px-4 py-3 text-sm text-<?= $color ?>-800 shadow-sm"><?= e($m) ?></div>
-      <?php endforeach; ?>
+      <?php   endforeach;
+      endforeach; ?>
 
       <?= $__content /* view buffer */ ?>
     </div>

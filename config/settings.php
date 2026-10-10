@@ -7,6 +7,20 @@ declare(strict_types=1);
 define('APP_ROOT', dirname(__DIR__));
 define('BASE_URL', rtrim(getenv('BASE_URL') ?: '', '/')); // e.g. '' when served from public/
 
+/* ---- mbstring polyfill (for PHP builds without the mbstring extension) ---- */
+if (!function_exists('mb_substr')) {
+    function mb_substr(string $s, int $start, ?int $length = null, string $encoding = 'UTF-8'): string
+    {
+        return substr($s, $start, $length ?? PHP_INT_MAX);
+    }
+}
+if (!function_exists('mb_strtoupper')) {
+    function mb_strtoupper(string $s, string $encoding = 'UTF-8'): string { return strtoupper($s); }
+}
+if (!function_exists('mb_strlen')) {
+    function mb_strlen(string $s, string $encoding = 'UTF-8'): int { return strlen($s); }
+}
+
 /** URL helper that respects an optional BASE_URL prefix. */
 function url(string $path = ''): string
 {
