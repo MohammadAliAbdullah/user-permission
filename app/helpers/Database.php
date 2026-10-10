@@ -12,7 +12,9 @@ final class Database
     {
         if (self::$pdo === null) {
             $cfg = require APP_ROOT . '/config/database.php';
-            $dsn = $cfg['socket'] && !getenv('DB_HOST')
+            // Use unix socket only on Linux when DB_HOST is not set; Windows/Laragon always TCP.
+            $useSocket = $cfg['socket'] && !getenv('DB_HOST') && DIRECTORY_SEPARATOR === '/';
+            $dsn = $useSocket
                 ? "mysql:unix_socket={$cfg['socket']};dbname={$cfg['database']};charset={$cfg['charset']}"
                 : "mysql:host={$cfg['host']};port={$cfg['port']};dbname={$cfg['database']};charset={$cfg['charset']}";
             self::$pdo = new PDO($dsn, $cfg['username'], $cfg['password'], [
