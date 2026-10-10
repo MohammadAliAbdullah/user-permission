@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>All User Group — permission-ui</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    brand: {50:'#eef4ff',100:'#dbe6fe',500:'#3b6ff6',600:'#2456e0',700:'#1c46b8',900:'#152a63'}
+  }}} };
+</script>
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</head>
+<body class="h-full bg-slate-100 text-slate-800 antialiased">
+<div x-data="{ sidebar:false }" class="min-h-full">
+
+  <!-- Top bar -->
+  <header class="fixed inset-x-0 top-0 z-40 h-16 bg-brand-900 text-white shadow"><div class="flex h-full items-center justify-between px-4">
+    <div class="flex items-center gap-3">
+      <button @click="sidebar=!sidebar" class="rounded p-2 hover:bg-white/10 lg:hidden" aria-label="Toggle menu"><svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="flex items-center gap-2 font-semibold tracking-wide"><span class="grid h-9 w-9 place-items-center rounded-lg bg-white/10 text-lg">⚓</span><span class="hidden sm:block">BNSIS · Security &amp; Access</span></div>
+      <span class="ml-2 hidden rounded-md bg-emerald-400/20 px-2 py-0.5 text-[11px] font-semibold text-emerald-200 ring-1 ring-emerald-300/30 md:block">sa_user_group · sa_ug_level</span>
+    </div>
+    <div class="flex items-center gap-4"><span class="hidden text-sm text-white/80 md:block">System Owner (Admin)</span>
+      <span class="hidden rounded-full bg-white/10 px-3 py-1 text-xs md:block">Super Admin</span>
+      <a href="../template/login.html" class="rounded-lg bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20">Sign out</a>
+    </div></div></header>
+
+  <!-- Sidebar -->
+  <aside class="fixed top-16 bottom-0 left-0 z-30 w-72 transform bg-white shadow-xl transition-transform duration-200 translate-x-0 lg:translate-x-0"
+         :class="sidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+    <nav id="sidebar-nav" class="h-full overflow-y-auto px-3 py-4 text-sm"></nav>
+  </aside>
+  <div class="fixed inset-0 z-20 bg-black/40" x-show="sidebar" @click="sidebar=false" x-cloak></div>
+
+  <!-- Main -->
+  <main class="pt-16 lg:pl-72">
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">All User Group</h1>
+          <p class="text-sm text-slate-500">User groups, hierarchy levels and legacy group membership.</p>
+        </div>
+        <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-brand-100">bnsis_permission · live data</span>
+      </div>
+
+<div class="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Groups</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-50 text-emerald-600 text-base">👥</span></div><p class="mt-1 text-2xl font-bold text-slate-900">5</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Levels</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-cyan-50 text-cyan-600 text-base">📶</span></div><p class="mt-1 text-2xl font-bold text-slate-900">10</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Users mapped</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-50 text-indigo-600 text-base">👤</span></div><p class="mt-1 text-2xl font-bold text-slate-900">124</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Assignments</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-rose-50 text-rose-600 text-base">🎯</span></div><p class="mt-1 text-2xl font-bold text-slate-900">834</p></div></div><div class="mb-6 grid gap-6 lg:grid-cols-2"><div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60"><h2 class="mb-3 font-bold text-slate-800">User Groups (sa_user_group)</h2><div class="mb-4 flex flex-wrap items-center gap-3"><div class="relative grow min-w-[220px]"><svg class="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4-4"/></svg><input id="q" type="search" placeholder="Search groups…" class="w-full rounded-lg border-0 bg-white py-2 pl-9 pr-3 text-sm shadow-sm ring-1 ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-500"></div><button id="btn-csv" class="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50">⬇ Export CSV</button></div><div id="t-grp"></div></div><div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60"><h2 class="mb-3 font-bold text-slate-800">Group Levels (sa_ug_level)</h2><div id="t-lvl"></div></div></div><div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60"><h2 class="mb-3 font-bold text-slate-800">Legacy group membership (usergroups table)</h2><div class="mb-4 flex flex-wrap items-center gap-3"><div class="relative grow min-w-[220px]"><svg class="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4-4"/></svg><input id="q3" type="search" placeholder="Search UserID / GroupID…" class="w-full rounded-lg border-0 bg-white py-2 pl-9 pr-3 text-sm shadow-sm ring-1 ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-500"></div><button id="btn-csv3" class="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50">⬇ Export CSV</button></div><div id="t-ug"></div></div>
+
+    </div>
+  </main>
+</div>
+<script>PU.mountChrome('user-groups.html','All User Group');</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+const D=window.DB;
+const grpCols=[{key:'USERGRP_ID',label:'ID'},{key:'USERGRP_NAME',label:'Group'},{key:'ORG_ID',label:'Org'},
+ {key:'users',label:'Users',render:v=>'<span class="pill pill-neutral">'+v+'</span>'},
+ {key:'asg',label:'Link grants',render:v=>'<span class="pill pill-neutral">'+v.toLocaleString()+'</span>'},
+ {key:'ACTIVE_STATUS',label:'Status',render:v=>PU.pill(v)}];
+const grps=D.sa_user_group.map(g=>({...g,
+ users:D.sa_users.filter(u=>u.USERGRP_ID===g.USERGRP_ID).length,
+ asg:D.sa_uglw_mlink.filter(a=>a.USERGRP_ID===g.USERGRP_ID).length}));
+const dG=PU.table('t-grp',grps,grpCols,{perPage:10});
+document.getElementById('q').addEventListener('input',e=>{const s=e.target.value.toLowerCase();
+ dG(grps.filter(r=>Object.values(r).some(v=>String(v??'').toLowerCase().includes(s))))});
+document.getElementById('btn-csv').onclick=()=>PU.csv('sa_user_group',grps,grpCols);
+const lvlCols=[{key:'UG_LEVEL_ID',label:'ID'},{key:'USERGRP_ID',label:'Group',render:(v,r)=>PU.cell(r.GNAME+' (#'+v+')')},
+ {key:'UGLEVE_NAME',label:'Level Name'},{key:'ORG_ID',label:'Org'},
+ {key:'asg',label:'Grants',render:v=>'<span class="pill pill-neutral">'+(v||0).toLocaleString()+'</span>'},
+ {key:'ORDER_SL',label:'Order'},{key:'ACTIVE_STATUS',label:'Status',render:v=>PU.pill(v)}];
+const gn={};D.sa_user_group.forEach(g=>gn[g.USERGRP_ID]=g.USERGRP_NAME);
+const levels=D.sa_ug_level.map(l=>({...l,GNAME:gn[l.USERGRP_ID],asg:D.sa_uglw_mlink.filter(a=>a.UG_LEVEL_ID===l.UG_LEVEL_ID).length}));
+PU.table('t-lvl',levels,lvlCols,{perPage:10});
+const ugCols=[{key:'GroupID',label:'GroupID'},{key:'UserID',label:'UserID'},{key:'uname',label:'User'},
+ {key:'ACTIVE_STATUS',label:'Status',render:v=>PU.pill(v)},{key:'CRE_DT',label:'Created'}];
+const un={};D.users.forEach(u=>un[u.UserID]=u.UserName1);
+const ugs=D.usergroups.map(r=>({...r,uname:un[r.UserID]}));
+const dU=PU.table('t-ug',ugs,ugCols,{perPage:15});
+(function(){const q=document.getElementById('q3');q.addEventListener('input',()=>{const s=q.value.toLowerCase();
+ dU(ugs.filter(r=>Object.values(r).some(v=>String(v??'').toLowerCase().includes(s))))});})();
+document.getElementById('btn-csv3').onclick=()=>PU.csv('usergroups',ugs,ugCols);
+</script>
+</body>
+</html>

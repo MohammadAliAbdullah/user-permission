@@ -1,0 +1,457 @@
+<article id="activity_logs" class="tbl rbac" data-group="rbac" data-cols="8" data-search="activity_logs log_id user_id username action module_link details ip_address cre_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>activity_logs</code></h3>
+    <span class="pill pill-emerald">RBAC · New</span>
+    <span class="meta">8 cols · PK: LOG_ID</span>
+  </div>
+  <p class="tbl-desc">Admin activity audit trail — every login / create / update / delete action is recorded here.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (LOG_ID)</span><span class="chip chip-idx">INDEX IDX_LOG_USER (USER_ID)</span><span class="chip chip-idx">INDEX IDX_LOG_DT (CRE_DT)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th><th>Comment</th></tr></thead><tbody>
+<tr><td class="c-name"><code>LOG_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USER_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERNAME</code> </td><td class="c-type"><code>varchar(50)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>ACTION</code> </td><td class="c-type"><code>varchar(60)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt">login, create_user, update_role ...</td></tr>
+<tr><td class="c-name"><code>MODULE_LINK</code> </td><td class="c-type"><code>varchar(120)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>DETAILS</code> </td><td class="c-type"><code>text</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>IP_ADDRESS</code> </td><td class="c-type"><code>varchar(45)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td><td class="c-cmt"></td></tr>
+  </tbody></table></div>
+</article>
+<article id="permissions" class="tbl rbac" data-group="rbac" data-cols="6" data-search="permissions permission_id link_id action_key display_name active_status cre_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>permissions</code></h3>
+    <span class="pill pill-emerald">RBAC · New</span>
+    <span class="meta">6 cols · PK: PERMISSION_ID · 1 FK · 1 inbound</span>
+  </div>
+  <p class="tbl-desc">Granular CRUD permission definitions derived from module links (create · read · update · delete per link).</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (PERMISSION_ID)</span><span class="chip chip-uq">UNIQUE UQ_PERM_LINK_ACTION (LINK_ID, ACTION_KEY)</span></div>
+  <div class="rels"><span class="chip chip-out">↗ LINK_ID → <a href="#sa_module_links">sa_module_links</a>.LINK_ID</span><span class="chip chip-in">↙ referenced by <a href="#role_permissions">role_permissions</a>.PERMISSION_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th><th>Comment</th></tr></thead><tbody>
+<tr><td class="c-name"><code>PERMISSION_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>LINK_ID</code> <span class="badge b-fk">FK</span><div class="fk-note">FK_PERM_LINK → <a href="#sa_module_links">sa_module_links.LINK_ID</a> · ON DELETE CASCADE</div></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt">FK -&gt; sa_module_links.LINK_ID</td></tr>
+<tr><td class="c-name"><code>ACTION_KEY</code> </td><td class="c-type"><code>varchar(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt">create|read|update|delete</td></tr>
+<tr><td class="c-name"><code>DISPLAY_NAME</code> </td><td class="c-type"><code>varchar(150)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td><td class="c-cmt"></td></tr>
+  </tbody></table></div>
+</article>
+<article id="role_permissions" class="tbl rbac" data-group="rbac" data-cols="6" data-search="role_permissions role_perm_id usergrp_id permission_id active_status cre_by cre_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>role_permissions</code></h3>
+    <span class="pill pill-emerald">RBAC · New</span>
+    <span class="meta">6 cols · PK: ROLE_PERM_ID · 2 FK</span>
+  </div>
+  <p class="tbl-desc">Junction table granting permissions to roles; UNIQUE(role, permission) prevents duplicate grants.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (ROLE_PERM_ID)</span><span class="chip chip-uq">UNIQUE UQ_ROLE_PERM (USERGRP_ID, PERMISSION_ID)</span><span class="chip chip-idx">INDEX IDX_RP_PERM (PERMISSION_ID)</span></div>
+  <div class="rels"><span class="chip chip-out">↗ PERMISSION_ID → <a href="#permissions">permissions</a>.PERMISSION_ID</span><span class="chip chip-out">↗ USERGRP_ID → <a href="#roles">roles</a>.USERGRP_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>ROLE_PERM_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-fk">FK</span><div class="fk-note">FK_RP_ROLE → <a href="#roles">roles.USERGRP_ID</a> · ON DELETE CASCADE</div></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>PERMISSION_ID</code> <span class="badge b-fk">FK</span><span class="badge b-idx">IDX</span><div class="fk-note">FK_RP_PERM → <a href="#permissions">permissions.PERMISSION_ID</a> · ON DELETE CASCADE</div></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="roles" class="tbl rbac" data-group="rbac" data-cols="10" data-search="roles usergrp_id org_id usergrp_name description is_system active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>roles</code></h3>
+    <span class="pill pill-emerald">RBAC · New</span>
+    <span class="meta">10 cols · PK: USERGRP_ID · 2 inbound</span>
+  </div>
+  <p class="tbl-desc">RBAC role master. IS_SYSTEM roles (e.g. Super Admin) cannot be deleted.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (USERGRP_ID)</span><span class="chip chip-idx">INDEX IDX_ROLE_ORG (ORG_ID)</span></div>
+  <div class="rels"><span class="chip chip-in">↙ referenced by <a href="#role_permissions">role_permissions</a>.USERGRP_ID</span><span class="chip chip-in">↙ referenced by <a href="#user_roles">user_roles</a>.USERGRP_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th><th>Comment</th></tr></thead><tbody>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERGRP_NAME</code> </td><td class="c-type"><code>varchar(50)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>DESCRIPTION</code> </td><td class="c-type"><code>varchar(255)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt">role purpose shown in UI</td></tr>
+<tr><td class="c-name"><code>IS_SYSTEM</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td><td class="c-cmt">system roles cannot be deleted</td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_module_links" class="tbl legacy" data-group="legacy" data-cols="19" data-search="sa_module_links link_id pr_link_id link_name link_name_bn sa_mlink_pages module_id url_uri link_desc sl_no create read update delete status active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_module_links</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">19 cols · PK: LINK_ID · 1 inbound</span>
+  </div>
+  <p class="tbl-desc">Legacy menu/action links (pages &amp; buttons) under modules; carries inline CREATE/READ/UPDATE/DELETE flags.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (LINK_ID)</span></div>
+  <div class="rels"><span class="chip chip-in">↙ referenced by <a href="#permissions">permissions</a>.LINK_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>LINK_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>PR_LINK_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_NAME</code> </td><td class="c-type"><code>varchar(60)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_NAME_BN</code> </td><td class="c-type"><code>varchar(500)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MLINK_PAGES</code> </td><td class="c-type"><code>varchar(10)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>MODULE_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>URL_URI</code> </td><td class="c-type"><code>varchar(200)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_DESC</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SL_NO</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>CREATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>READ</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>UPDATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>DELETE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>STATUS</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_modules" class="tbl legacy" data-group="legacy" data-cols="11" data-search="sa_modules module_id module_name short_name module_name_bn sl_no module_icon active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_modules</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">11 cols · PK: MODULE_ID</span>
+  </div>
+  <p class="tbl-desc">Legacy application modules (top-level menu groups) with Bengali names &amp; icons.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (MODULE_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>MODULE_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>MODULE_NAME</code> </td><td class="c-type"><code>varchar(70)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>SHORT_NAME</code> </td><td class="c-type"><code>char(10)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>MODULE_NAME_BN</code> </td><td class="c-type"><code>varchar(500)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SL_NO</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>MODULE_ICON</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_org_mlinks" class="tbl legacy" data-group="legacy" data-cols="17" data-search="sa_org_mlinks sa_mlinks_id sa_mlink_name sa_mlink_pages sa_module_id org_id link_id url_uri create read update delete status active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_org_mlinks</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">17 cols · PK: SA_MLINKS_ID</span>
+  </div>
+  <p class="tbl-desc">Per-organization copies of module links (legacy org-level menu access grants).</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (SA_MLINKS_ID)</span><span class="chip chip-idx">INDEX FK02_ORG_ID (ORG_ID)</span><span class="chip chip-idx">INDEX FK01_SA_MODULE_ID (SA_MODULE_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>SA_MLINKS_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MLINK_NAME</code> </td><td class="c-type"><code>varchar(60)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MLINK_PAGES</code> </td><td class="c-type"><code>varchar(10)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MODULE_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>URL_URI</code> </td><td class="c-type"><code>varchar(200)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CREATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>READ</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>UPDATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>DELETE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>STATUS</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_org_modules" class="tbl legacy" data-group="legacy" data-cols="10" data-search="sa_org_modules sa_module_id sa_module_name org_id default_flag module_id active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_org_modules</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">10 cols · PK: SA_MODULE_ID</span>
+  </div>
+  <p class="tbl-desc">Per-organization module activation — which modules an organization has enabled.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (SA_MODULE_ID)</span><span class="chip chip-idx">INDEX FK01_ORG_ID (ORG_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>SA_MODULE_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MODULE_NAME</code> </td><td class="c-type"><code>varchar(70)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>DEFAULT_FLAG</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>MODULE_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_organizations" class="tbl legacy" data-group="legacy" data-cols="22" data-search="sa_organizations org_id org_name parent_org_id org_type_id slogan abbr dscp estb_dt addr1 addr2 zip_code tel phone fax email website logo active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_organizations</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">22 cols · PK: ORG_ID</span>
+  </div>
+  <p class="tbl-desc">Organization master — name, address, contacts, logo and parent-org hierarchy.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (ORG_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_NAME</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>PARENT_ORG_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_TYPE_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SLOGAN</code> </td><td class="c-type"><code>varchar(200)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ABBR</code> </td><td class="c-type"><code>varchar(8)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>DSCP</code> </td><td class="c-type"><code>text</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ESTB_DT</code> </td><td class="c-type"><code>date</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ADDR1</code> </td><td class="c-type"><code>varchar(160)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ADDR2</code> </td><td class="c-type"><code>varchar(160)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ZIP_CODE</code> </td><td class="c-type"><code>varchar(8)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>TEL</code> </td><td class="c-type"><code>varchar(80)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>PHONE</code> </td><td class="c-type"><code>varchar(80)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>FAX</code> </td><td class="c-type"><code>varchar(80)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>EMAIL</code> </td><td class="c-type"><code>varchar(40)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>WEBSITE</code> </td><td class="c-type"><code>varchar(40)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LOGO</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_ug_level" class="tbl legacy" data-group="legacy" data-cols="10" data-search="sa_ug_level ug_level_id usergrp_id org_id ugleve_name order_sl active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_ug_level</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">10 cols · PK: UG_LEVEL_ID</span>
+  </div>
+  <p class="tbl-desc">User-group level definitions (hierarchy levels used by the legacy permission model).</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (UG_LEVEL_ID)</span><span class="chip chip-idx">INDEX FK04_ORG_ID (ORG_ID)</span><span class="chip chip-idx">INDEX FK01_USERGRP_ID (USERGRP_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>UG_LEVEL_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UGLEVE_NAME</code> </td><td class="c-type"><code>varchar(50)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORDER_SL</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_uglw_mlink" class="tbl legacy" data-group="legacy" data-cols="19" data-search="sa_uglw_mlink sa_uglwm_link sa_mlinks_id org_id user_id usergrp_id ug_level_id sa_module_id link_id create read update delete status url_uri active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_uglw_mlink</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">19 cols · PK: SA_UGLWM_LINK</span>
+  </div>
+  <p class="tbl-desc">Legacy grants: user-group ↔ work/school-level ↔ module-link access.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (SA_UGLWM_LINK)</span><span class="chip chip-idx">INDEX FK01_USER_ID (USER_ID)</span><span class="chip chip-idx">INDEX FK02_SA_MODULE_ID (SA_MODULE_ID)</span><span class="chip chip-idx">INDEX FK01_SA_MLINKS_ID (SA_MLINKS_ID)</span><span class="chip chip-idx">INDEX FK02_USERGRP_ID (USERGRP_ID)</span><span class="chip chip-idx">INDEX FK01_UG_LEVEL_ID (UG_LEVEL_ID)</span><span class="chip chip-idx">INDEX FK05_ORG_ID (ORG_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>SA_UGLWM_LINK</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MLINKS_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>USER_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UG_LEVEL_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MODULE_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CREATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>READ</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>UPDATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>DELETE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>STATUS</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>URL_URI</code> </td><td class="c-type"><code>varchar(200)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_ugw_mlink" class="tbl legacy" data-group="legacy" data-cols="12" data-search="sa_ugw_mlink sa_ugwm_link sa_module_id sa_mlinks_id link_id usergrp_id url_uri org_id active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_ugw_mlink</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">12 cols · PK: SA_UGWM_LINK</span>
+  </div>
+  <p class="tbl-desc">Legacy grants: user-group ↔ module-link access (institution-wide).</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (SA_UGWM_LINK)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>SA_UGWM_LINK</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MODULE_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MLINKS_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>URL_URI</code> </td><td class="c-type"><code>varchar(200)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_user_group" class="tbl legacy" data-group="legacy" data-cols="8" data-search="sa_user_group usergrp_id org_id usergrp_name active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_user_group</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">8 cols · PK: USERGRP_ID</span>
+  </div>
+  <p class="tbl-desc">Legacy user-group master (predecessor of the new roles table).</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (USERGRP_ID)</span><span class="chip chip-idx">INDEX FK03_ORG_ID (ORG_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_NAME</code> </td><td class="c-type"><code>varchar(50)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_user_wmgl" class="tbl legacy" data-group="legacy" data-cols="7" data-search="sa_user_wmgl usrwmgl_id user_id org_id usergrp_id userlvl_id default_fg active_status">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_user_wmgl</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">7 cols · PK: USRWMGL_ID</span>
+  </div>
+  <p class="tbl-desc">Legacy mapping: user ↔ work/school ↔ group-level assignments.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (USRWMGL_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>USRWMGL_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>USER_ID</code> </td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>USERLVL_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>DEFAULT_FG</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_users" class="tbl legacy" data-group="legacy" data-cols="18" data-search="sa_users user_id full_name username userpw efect_from_dt expr_dt org_id usergrp_id userlvl_id user_entity email userimg active_status cre_dt cre_by upd_dt upd_by last_login_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_users</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">18 cols · PK: USER_ID · 1 inbound</span>
+  </div>
+  <p class="tbl-desc">Core user accounts — login credentials, profile fields and organization/institution scoping.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (USER_ID)</span><span class="chip chip-idx">INDEX sa_users_ibfk_1 (USERLVL_ID)</span><span class="chip chip-idx">INDEX sa_users_ibfk_2 (USERGRP_ID)</span><span class="chip chip-idx">INDEX sa_users_ibfk_3 (ORG_ID)</span></div>
+  <div class="rels"><span class="chip chip-in">↙ referenced by <a href="#user_roles">user_roles</a>.USER_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th><th>Comment</th></tr></thead><tbody>
+<tr><td class="c-name"><code>USER_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>FULL_NAME</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERNAME</code> </td><td class="c-type"><code>varchar(16)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERPW</code> </td><td class="c-type"><code>varchar(60)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>EFECT_FROM_DT</code> </td><td class="c-type"><code>date</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt">PASSWORD effective from date</td></tr>
+<tr><td class="c-name"><code>EXPR_DT</code> </td><td class="c-type"><code>date</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt">PASSWORD effective expire date</td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERLVL_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USER_ENTITY</code> </td><td class="c-type"><code>varchar(4)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT U</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>EMAIL</code> </td><td class="c-type"><code>varchar(40)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERIMG</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>LAST_LOGIN_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+  </tbody></table></div>
+</article>
+<article id="user_roles" class="tbl rbac" data-group="rbac" data-cols="7" data-search="user_roles user_role_id user_id usergrp_id default_fg active_status cre_by cre_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>user_roles</code></h3>
+    <span class="pill pill-emerald">RBAC · New</span>
+    <span class="meta">7 cols · PK: USER_ROLE_ID · 2 FK</span>
+  </div>
+  <p class="tbl-desc">User ↔ role assignment junction; DEFAULT_FG marks the user primary/default group.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (USER_ROLE_ID)</span><span class="chip chip-uq">UNIQUE UQ_USER_ROLE (USER_ID, USERGRP_ID)</span><span class="chip chip-idx">INDEX IDX_UR_ROLE (USERGRP_ID)</span></div>
+  <div class="rels"><span class="chip chip-out">↗ USERGRP_ID → <a href="#roles">roles</a>.USERGRP_ID</span><span class="chip chip-out">↗ USER_ID → <a href="#sa_users">sa_users</a>.USER_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th><th>Comment</th></tr></thead><tbody>
+<tr><td class="c-name"><code>USER_ROLE_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USER_ID</code> <span class="badge b-fk">FK</span><div class="fk-note">FK_UR_USER → <a href="#sa_users">sa_users.USER_ID</a> · ON DELETE CASCADE</div></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-fk">FK</span><span class="badge b-idx">IDX</span><div class="fk-note">FK_UR_ROLE → <a href="#roles">roles.USERGRP_ID</a> · ON DELETE CASCADE</div></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>DEFAULT_FG</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt">primary role of the user</td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td><td class="c-cmt"></td></tr>
+  </tbody></table></div>
+</article>
+<article id="userdaogroup" class="tbl legacy" data-group="legacy" data-cols="7" data-search="userdaogroup daogroupid userid active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>userdaogroup</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">7 cols</span>
+  </div>
+  <p class="tbl-desc">Legacy DAO (office/institution) ↔ user-group mapping.</p>
+  <div class="keys"></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>DAOGroupID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>UserID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="usergroups" class="tbl legacy" data-group="legacy" data-cols="7" data-search="usergroups groupid userid active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>usergroups</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">7 cols</span>
+  </div>
+  <p class="tbl-desc">Legacy table exposing user groups joined with their DAO scope.</p>
+  <div class="keys"></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>GroupID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>UserID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="users" class="tbl legacy" data-group="legacy" data-cols="6" data-search="users userid loginid username1 password ownerid isactive">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>users</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">6 cols · PK: UserID</span>
+  </div>
+  <p class="tbl-desc">Legacy users table kept for backward compatibility with older modules.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (UserID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>UserID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>LoginID</code> </td><td class="c-type"><code>varchar(50)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>UserName1</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>Password</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>OwnerID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>IsActive</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+  </tbody></table></div>
+</article>

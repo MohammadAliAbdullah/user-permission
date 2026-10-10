@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DB Schema & Data — permission-ui</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    brand: {50:'#eef4ff',100:'#dbe6fe',500:'#3b6ff6',600:'#2456e0',700:'#1c46b8',900:'#152a63'}
+  }}} };
+</script>
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</head>
+<body class="h-full bg-slate-100 text-slate-800 antialiased">
+<div x-data="{ sidebar:false }" class="min-h-full">
+
+  <!-- Top bar -->
+  <header class="fixed inset-x-0 top-0 z-40 h-16 bg-brand-900 text-white shadow"><div class="flex h-full items-center justify-between px-4">
+    <div class="flex items-center gap-3">
+      <button @click="sidebar=!sidebar" class="rounded p-2 hover:bg-white/10 lg:hidden" aria-label="Toggle menu"><svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="flex items-center gap-2 font-semibold tracking-wide"><span class="grid h-9 w-9 place-items-center rounded-lg bg-white/10 text-lg">⚓</span><span class="hidden sm:block">BNSIS · Security &amp; Access</span></div>
+      <span class="ml-2 hidden rounded-md bg-emerald-400/20 px-2 py-0.5 text-[11px] font-semibold text-emerald-200 ring-1 ring-emerald-300/30 md:block">19 tables</span>
+    </div>
+    <div class="flex items-center gap-4"><span class="hidden text-sm text-white/80 md:block">System Owner (Admin)</span>
+      <span class="hidden rounded-full bg-white/10 px-3 py-1 text-xs md:block">Super Admin</span>
+      <a href="../template/login.html" class="rounded-lg bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20">Sign out</a>
+    </div></div></header>
+
+  <!-- Sidebar -->
+  <aside class="fixed top-16 bottom-0 left-0 z-30 w-72 transform bg-white shadow-xl transition-transform duration-200 translate-x-0 lg:translate-x-0"
+         :class="sidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+    <nav id="sidebar-nav" class="h-full overflow-y-auto px-3 py-4 text-sm"></nav>
+  </aside>
+  <div class="fixed inset-0 z-20 bg-black/40" x-show="sidebar" @click="sidebar=false" x-cloak></div>
+
+  <!-- Main -->
+  <main class="pt-16 lg:pl-72">
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">DB Schema & Data</h1>
+          <p class="text-sm text-slate-500">All 19 tables of bnsis_permission with live row counts.</p>
+        </div>
+        <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-brand-100">bnsis_permission · live data</span>
+      </div>
+
+<div class="mb-6 rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60"><h2 class="mb-3 font-bold text-slate-800">bnsis_permission — 19 tables</h2><p class="mb-3 text-sm text-slate-500">RBAC (new) in blue, legacy in grey. Full column-level design lives in <a class="font-semibold text-brand-600 hover:underline" href="../docs/database-schema.html">docs/database-schema.html</a>; row data in <a class="font-semibold text-brand-600 hover:underline" href="../docs/database-data.html">docs/database-data.html</a>.</p><div class="flex flex-wrap gap-2"><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-brand-50 text-brand-700 ring-brand-100">activity_logs<span class="ml-1 opacity-60">· Audit trail of system actions</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-brand-50 text-brand-700 ring-brand-100">permissions<span class="ml-1 opacity-60">· Atomic CRUD permission definitions</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-brand-50 text-brand-700 ring-brand-100">role_permissions<span class="ml-1 opacity-60">· Role ↔ permission mapping</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-brand-50 text-brand-700 ring-brand-100">roles<span class="ml-1 opacity-60">· Dynamic role definitions</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-brand-50 text-brand-700 ring-brand-100">user_roles<span class="ml-1 opacity-60">· User ↔ role assignment</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">sa_module_links<span class="ml-1 opacity-60">· Menu/action links (231 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">sa_modules<span class="ml-1 opacity-60">· Application modules (11 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">sa_org_mlinks<span class="ml-1 opacity-60">· Per-org link provisioning (231 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">sa_org_modules<span class="ml-1 opacity-60">· Per-org modules (11 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">sa_organizations<span class="ml-1 opacity-60">· Organizations (4 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">sa_ug_level<span class="ml-1 opacity-60">· User-group levels (10 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">sa_uglw_mlink<span class="ml-1 opacity-60">· Group×level link grants (834 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">sa_user_group<span class="ml-1 opacity-60">· User groups (5 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">sa_user_wmgl<span class="ml-1 opacity-60">· User work-manager grouping</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">sa_users<span class="ml-1 opacity-60">· Login accounts (124 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">userdaogroup<span class="ml-1 opacity-60">· DAO group membership (517 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">usergroups<span class="ml-1 opacity-60">· Legacy group membership (94 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">users<span class="ml-1 opacity-60">· Legacy users (93 rows)</span></span><span class="rounded-full px-3 py-1 text-xs font-semibold ring-1 bg-slate-50 text-slate-600 ring-slate-200">web_menu_groups<span class="ml-1 opacity-60">· Web menu group definitions</span></span></div></div><div class="mb-6 grid gap-6 lg:grid-cols-2"><div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60"><h2 class="mb-3 font-bold text-slate-800">Row counts (live dump)</h2><div id="t-cnt"></div></div><div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60"><h2 class="mb-3 font-bold text-slate-800">Relationship map</h2><pre class="overflow-x-auto rounded-lg bg-slate-50 p-4 text-[11px] leading-relaxed text-slate-600">sa_organizations ─┬─ sa_org_modules ──── sa_modules
+                  ├─ sa_org_mlinks ───── sa_module_links (LINK_ID)
+                  └─ sa_uglw_mlink ─┬─ sa_user_group ─┐
+                                    ├─ sa_ug_level ───┤→ sa_users (USERGRP_ID)
+                                    └─ URL_URI → links │
+users ── usergroups / userdaogroup ───────────────────┘
+roles ── role_permissions ── permissions      (RBAC, empty)
+user_roles → roles / usergroups / sa_users    (RBAC, empty)
+activity_logs → sa_users                      (audit, empty)</pre></div></div>
+
+    </div>
+  </main>
+</div>
+<script>PU.mountChrome('schema.html','DB Schema & Data');</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+const D=window.DB;
+const empties=['activity_logs','permissions','role_permissions','roles','user_roles','sa_user_wmgl','web_menu_groups'];
+const rows=Object.entries(D).map(([t,d])=>({TABLE:t,ROWS:d.length,COLS:Object.keys(d[0]).length}));
+empties.forEach(t=>rows.push({TABLE:t,ROWS:0,COLS:'—'}));
+rows.sort((a,b)=>b.ROWS-a.ROWS);
+PU.table('t-cnt',rows,[{key:'TABLE',label:'Table',render:v=>'<span class="font-mono text-xs font-semibold text-slate-700">'+v+'</span>'},
+ {key:'ROWS',label:'Rows',render:v=>'<span class="pill '+(v?'pill-on':'pill-off')+'">'+(v?v.toLocaleString():'empty')+'</span>'},
+ {key:'COLS',label:'Columns'}],{perPage:20});
+</script>
+</body>
+</html>

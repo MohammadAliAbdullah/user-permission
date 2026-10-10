@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard — permission-ui</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    brand: {50:'#eef4ff',100:'#dbe6fe',500:'#3b6ff6',600:'#2456e0',700:'#1c46b8',900:'#152a63'}
+  }}} };
+</script>
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</head>
+<body class="h-full bg-slate-100 text-slate-800 antialiased">
+<div x-data="{ sidebar:false }" class="min-h-full">
+
+  <!-- Top bar -->
+  <header class="fixed inset-x-0 top-0 z-40 h-16 bg-brand-900 text-white shadow"><div class="flex h-full items-center justify-between px-4">
+    <div class="flex items-center gap-3">
+      <button @click="sidebar=!sidebar" class="rounded p-2 hover:bg-white/10 lg:hidden" aria-label="Toggle menu"><svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="flex items-center gap-2 font-semibold tracking-wide"><span class="grid h-9 w-9 place-items-center rounded-lg bg-white/10 text-lg">⚓</span><span class="hidden sm:block">BNSIS · Security &amp; Access</span></div>
+      <span class="ml-2 hidden rounded-md bg-emerald-400/20 px-2 py-0.5 text-[11px] font-semibold text-emerald-200 ring-1 ring-emerald-300/30 md:block">DASHBOARD</span>
+    </div>
+    <div class="flex items-center gap-4"><span class="hidden text-sm text-white/80 md:block">System Owner (Admin)</span>
+      <span class="hidden rounded-full bg-white/10 px-3 py-1 text-xs md:block">Super Admin</span>
+      <a href="../template/login.html" class="rounded-lg bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20">Sign out</a>
+    </div></div></header>
+
+  <!-- Sidebar -->
+  <aside class="fixed top-16 bottom-0 left-0 z-30 w-72 transform bg-white shadow-xl transition-transform duration-200 translate-x-0 lg:translate-x-0"
+         :class="sidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+    <nav id="sidebar-nav" class="h-full overflow-y-auto px-3 py-4 text-sm"></nav>
+  </aside>
+  <div class="fixed inset-0 z-20 bg-black/40" x-show="sidebar" @click="sidebar=false" x-cloak></div>
+
+  <!-- Main -->
+  <main class="pt-16 lg:pl-72">
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
+          <p class="text-sm text-slate-500">Overview of modules, links, groups, users and assignments.</p>
+        </div>
+        <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-brand-100">bnsis_permission · live data</span>
+      </div>
+
+<div class="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Modules</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-blue-50 text-blue-600 text-base">🧩</span></div><p class="mt-1 text-2xl font-bold text-slate-900">11</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Module Links</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-violet-50 text-violet-600 text-base">🔗</span></div><p class="mt-1 text-2xl font-bold text-slate-900">231</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Organizations</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-amber-50 text-amber-600 text-base">🏛️</span></div><p class="mt-1 text-2xl font-bold text-slate-900">4</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">User Groups</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-50 text-emerald-600 text-base">👥</span></div><p class="mt-1 text-2xl font-bold text-slate-900">5</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Group Levels</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-cyan-50 text-cyan-600 text-base">📶</span></div><p class="mt-1 text-2xl font-bold text-slate-900">10</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Users (sa_users)</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-50 text-indigo-600 text-base">👤</span></div><p class="mt-1 text-2xl font-bold text-slate-900">124</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Link Assignments</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-rose-50 text-rose-600 text-base">🎯</span></div><p class="mt-1 text-2xl font-bold text-slate-900">834</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Total Rows (dump)</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-600 text-base">🗄️</span></div><p class="mt-1 text-2xl font-bold text-slate-900">2165</p></div></div><div class="grid gap-6 lg:grid-cols-2"><div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60"><div class="mb-3 flex items-center justify-between"><h2 class="font-bold text-slate-800">Security &amp; Access menu (live)</h2><a href="module-links.html" class="text-xs font-semibold text-brand-600 hover:underline">View all →</a></div><div class="overflow-x-auto rounded-lg ring-1 ring-slate-200"><table class="min-w-full divide-y divide-slate-200 text-sm"><thead class="bg-slate-50 text-left text-[11px] uppercase tracking-wide text-slate-500"><tr><th class="px-3 py-2.5">ID</th><th class="px-3 py-2.5">Link</th><th class="px-3 py-2.5">Module</th><th class="px-3 py-2.5">URI</th></tr></thead><tbody class="divide-y divide-slate-100"><tr class="hover:bg-brand-50/50"><td class="px-3 py-2 font-mono text-xs text-slate-500">#1</td><td class="px-3 py-2 font-medium text-slate-800">Modules</td><td class="px-3 py-2">Security & Access</td><td class="px-3 py-2 font-mono text-xs text-slate-500">accessControl/index</td></tr><tr class="hover:bg-brand-50/50"><td class="px-3 py-2 font-mono text-xs text-slate-500">#2</td><td class="px-3 py-2 font-medium text-slate-800">Module Links</td><td class="px-3 py-2">Security & Access</td><td class="px-3 py-2 font-mono text-xs text-slate-500">accessControl/moduleLinks</td></tr><tr class="hover:bg-brand-50/50"><td class="px-3 py-2 font-mono text-xs text-slate-500">#3</td><td class="px-3 py-2 font-medium text-slate-800">Organization Modules</td><td class="px-3 py-2">Security & Access</td><td class="px-3 py-2 font-mono text-xs text-slate-500">accessControl/orgModuleSetup</td></tr><tr class="hover:bg-brand-50/50"><td class="px-3 py-2 font-mono text-xs text-slate-500">#4</td><td class="px-3 py-2 font-medium text-slate-800">All User Group</td><td class="px-3 py-2">Security & Access</td><td class="px-3 py-2 font-mono text-xs text-slate-500">accessControl/allGroup</td></tr><tr class="hover:bg-brand-50/50"><td class="px-3 py-2 font-mono text-xs text-slate-500">#5</td><td class="px-3 py-2 font-medium text-slate-800">Assign Link To Group</td><td class="px-3 py-2">Security & Access</td><td class="px-3 py-2 font-mono text-xs text-slate-500">accessControl/assignModuleToGroup</td></tr><tr class="hover:bg-brand-50/50"><td class="px-3 py-2 font-mono text-xs text-slate-500">#6</td><td class="px-3 py-2 font-medium text-slate-800">User Setup</td><td class="px-3 py-2">Security & Access</td><td class="px-3 py-2 font-mono text-xs text-slate-500">setup/userSetup</td></tr></tbody></table></div><h2 class="mb-3 mt-6 font-bold text-slate-800">Recently updated links</h2><div id="recent"></div></div><div><h2 class="mb-3 font-bold text-slate-800">Quick navigation</h2><div class="grid gap-3 sm:grid-cols-2"><a href="modules.html" class="tile flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><span class="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-lg">🧩</span><span class="font-semibold text-slate-700">Modules</span><span class="ml-auto text-slate-300">→</span></a><a href="module-links.html" class="tile flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><span class="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-lg">🔗</span><span class="font-semibold text-slate-700">Module Links</span><span class="ml-auto text-slate-300">→</span></a><a href="org-modules.html" class="tile flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><span class="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-lg">🏛️</span><span class="font-semibold text-slate-700">Organization Modules</span><span class="ml-auto text-slate-300">→</span></a><a href="user-groups.html" class="tile flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><span class="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-lg">👥</span><span class="font-semibold text-slate-700">All User Group</span><span class="ml-auto text-slate-300">→</span></a><a href="assign-links.html" class="tile flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><span class="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-lg">🎯</span><span class="font-semibold text-slate-700">Assign Link To Group</span><span class="ml-auto text-slate-300">→</span></a><a href="user-setup.html" class="tile flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><span class="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-lg">⚙️</span><span class="font-semibold text-slate-700">User Setup</span><span class="ml-auto text-slate-300">→</span></a><a href="users.html" class="tile flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><span class="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-lg">👤</span><span class="font-semibold text-slate-700">Users</span><span class="ml-auto text-slate-300">→</span></a><a href="roles.html" class="tile flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><span class="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-lg">🛡️</span><span class="font-semibold text-slate-700">Roles</span><span class="ml-auto text-slate-300">→</span></a><a href="role-permissions.html" class="tile flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><span class="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-lg">🔑</span><span class="font-semibold text-slate-700">Role Permissions</span><span class="ml-auto text-slate-300">→</span></a><a href="schema.html" class="tile flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><span class="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-lg">🗄️</span><span class="font-semibold text-slate-700">DB Schema & Data</span><span class="ml-auto text-slate-300">→</span></a></div><div class="mt-4 rounded-xl bg-brand-900 p-5 text-white shadow"><p class="text-sm font-semibold">Data source</p><p class="mt-1 text-xs leading-relaxed text-white/70">All pages render live rows from the <code class="rounded bg-white/10 px-1">db_permission</code> MySQL dump (12 tables, 2165 rows). RBAC tables (roles, permissions, role_permissions, user_roles, activity_logs) are empty in this dump — shown as “no data”.</p></div></div></div>
+
+    </div>
+  </main>
+</div>
+<script>PU.mountChrome('index.html','Admin Dashboard');</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+const D=window.DB;
+const recent=[...D.sa_module_links].sort((a,b)=>((b.UPD_DT||b.CRE_DT||'')+'').localeCompare(a.UPD_DT||a.CRE_DT||'')).slice(0,8);
+PU.table('recent',recent,[
+ {key:'LINK_ID',label:'ID'},{key:'LINK_NAME',label:'Link'},{key:'URL_URI',label:'URI'},
+ {key:'UPD_DT',label:'Updated'}],{perPage:8});
+</script>
+</body>
+</html>

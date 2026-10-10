@@ -1,33 +1,31 @@
-# BNSIS Admin Panel — Static HTML Template
+# BNSIS Admin — HTML UI Template
 
-This folder contains **all admin-panel pages as ready-to-open static HTML files**,
-exported live from the running application with **real data** from the
-`bnsis_permission` database (users, roles, permissions, modules, activity log).
+Sob page ekhon ekti **shared layout template** follow kore:
+- Top bar (brand-900), fixed sidebar (Alpine collapse + localStorage memory), main content area, page header (title + badge).
+- Tailwind CDN + Alpine.js; color/typography tokens: `assets/app.css`.
 
-## Pages in this template
+## Files
+| File | Page |
+|---|---|
+| `page-template.html` | ← **notun page er jonno master template** (copy korun) |
+| `login.html` | Standalone login card (sidebar chara) |
+| `index.html` | Dashboard (KPI cards, charts, tables) |
+| `users.html`, `user-form.html` | User list / create-edit form |
+| `roles.html`, `role-form.html` | Roles / role form |
+| `permissions.html` | Role permissions matrix |
+| `modules.html` | Modules & links tree |
+| `activity.html` | Activity log |
+| `database-schema.html` | DB schema browser |
+| `database-data.html` | Table data viewer |
 
-| File | Page | What it shows (with real data) |
-|---|---|---|
-| `index.html` | Dashboard | KPI cards (users / roles / permission grants / modules), role access matrix, recent activity |
-| `login.html` | Login | Sign-in screen design (`admin / admin123`) |
-| `users.html` | Users | Paginated user list with names, usernames, emails, assigned roles, status badges, search & filter UI |
-| `user-form.html` | User form | Create/edit user: personal fields, account status, level, primary + secondary role checkboxes |
-| `roles.html` | Roles | Role cards with user counts, module counts, permission counts, system-role badges |
-| `role-form.html` | Role form | Create/edit role fields |
-| `permissions.html` | Permissions | Full CRUD matrix per role — every module link × Create/Read/Update/Delete checkboxes (2,163 seeded grants) |
-| `modules.html` | Modules | All menu links grouped by module with icons, URLs, sort order, active state |
-| `activity.html` | Activity log | Recent audit entries (who did what, when, IP) |
-| `database-schema.html` | DB schema | Documentation of all 19 tables of `bnsis_permission` with PK/UQ/FK badges and relationships |
-| `assets/app.css` | — | Shared custom stylesheet (used alongside Tailwind CDN) |
+## Notun page bananor niyom
+1. `cp page-template.html branch.html`
+2. `<title>` + page-header `<h1>/<p>` update korun.
+3. Sidebar e ei page er link add/active korun (`bg-brand-50 text-brand-700 font-medium`).
+4. Content `PAGE CONTENT START/END` marker er moddhe likhun.
+5. Full menu block dorkar hole `index.html` theke `<aside>…</aside>` copy korun.
 
-## How to view
-
-- Just **double-click any `.html` file** — everything is self-contained.
-- Or serve the folder: `php -S localhost:8000 -t template` → http://localhost:8000/index.html
-- Tailwind CSS + Alpine.js load from CDN, so an internet connection is needed for full styling.
-
-## Notes
-
-- Navigation between pages works (sidebar/topbar links point to these `.html` files).
-- Forms are display-only here (`action="#"`); wire them back to `public/index.php?action=…` endpoints when integrating into a real app.
-- To regenerate after data changes, re-export the live pages and rewrite links to relative `.html` targets.
+## Preview
+```bash
+python3 -m http.server 8000 --directory .   # http://localhost:8000/index.html
+```

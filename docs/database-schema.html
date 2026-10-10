@@ -1,149 +1,655 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>bnsis_permission — Full Database Schema</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>.badge-pk{background:#fef3c7;color:#92400e}.badge-uq{background:#dbeafe;color:#1e40af}.badge-idx{background:#f1f5f9;color:#475569}.badge-pk,.badge-uq,.badge-idx{font-size:10px;font-weight:700;padding:1px 6px;border-radius:9999px}</style></head>
-<body class="bg-slate-100 text-slate-800"><main class="max-w-5xl mx-auto p-6 space-y-6">
-<header class="rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 text-white p-6 shadow"><h1 class="text-2xl font-bold">Database Schema — <code>bnsis_permission</code></h1>
-<p class="text-sm opacity-90 mt-1">Dynamic User Role &amp; Permission Management Module · 19 tables · generated live from MySQL/MariaDB · updated 2026-10-11</p></header>
-<section class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60"><h2 class="font-bold mb-3">Table Index</h2><div><a href="#activity_logs" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100 inline-block mr-1 mb-1">activity_logs</a><a href="#permissions" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100 inline-block mr-1 mb-1">permissions</a><a href="#role_permissions" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100 inline-block mr-1 mb-1">role_permissions</a><a href="#roles" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100 inline-block mr-1 mb-1">roles</a><a href="#sa_module_links" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_module_links</a><a href="#sa_modules" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_modules</a><a href="#sa_org_mlinks" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_org_mlinks</a><a href="#sa_org_modules" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_org_modules</a><a href="#sa_organizations" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_organizations</a><a href="#sa_ug_level" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_ug_level</a><a href="#sa_uglw_mlink" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_uglw_mlink</a><a href="#sa_ugw_mlink" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_ugw_mlink</a><a href="#sa_user_group" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_user_group</a><a href="#sa_user_wmgl" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_user_wmgl</a><a href="#sa_users" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">sa_users</a><a href="#user_roles" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100 inline-block mr-1 mb-1">user_roles</a><a href="#userdaogroup" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">userdaogroup</a><a href="#usergroups" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">usergroups</a><a href="#users" class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 inline-block mr-1 mb-1">users</a></div></section>
-<section class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60"><h2 class="font-bold mb-2">Relationships</h2>
-<pre class="text-xs leading-5 text-slate-600 overflow-x-auto">sa_users ──< user_roles >── usergroups/roles          (users ↔ roles, DEFAULT_FG marks primary)
-sa_module_links ──< permissions >── role_permissions ──> usergroups   (CRUD perms: create/read/update/delete per link per role, UNIQUE(LINK_ID,ACTION_KEY))
-sa_modules ──< sa_module_links ; sa_organizations ──< sa_org_modules / sa_org_mlinks (legacy menu access)
-sa_uglw_mlink / sa_ugw_mlink → legacy group↔link grants ; activity_logs → audit trail (USER_ID)</pre></section>
-<section id="activity_logs" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-emerald-50/50">
-    <h2 class="font-bold text-slate-800">activity_logs</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">RBAC (new)</span>
-    <span class="ml-auto text-xs text-slate-400">8 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">LOG_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">bigint(20)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USER_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">bigint(20)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERNAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(50)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTION <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(60)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">MODULE_LINK <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(120)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">DETAILS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">text</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">IP_ADDRESS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(45)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr></tbody></table></section><section id="permissions" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-emerald-50/50">
-    <h2 class="font-bold text-slate-800">permissions</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">RBAC (new)</span>
-    <span class="ml-auto text-xs text-slate-400">6 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">PERMISSION_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">LINK_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600">FK_PERM_LINK: → sa_module_links.LINK_ID</div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTION_KEY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(20)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">DISPLAY_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(150)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr></tbody></table></section><section id="role_permissions" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-emerald-50/50">
-    <h2 class="font-bold text-slate-800">role_permissions</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">RBAC (new)</span>
-    <span class="ml-auto text-xs text-slate-400">6 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">ROLE_PERM_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERGRP_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600">FK_RP_ROLE: → roles.USERGRP_ID</div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">PERMISSION_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600">FK_RP_PERM: → permissions.PERMISSION_ID</div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr></tbody></table></section><section id="roles" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-emerald-50/50">
-    <h2 class="font-bold text-slate-800">roles</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">RBAC (new)</span>
-    <span class="ml-auto text-xs text-slate-400">10 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">USERGRP_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">USERGRP_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(50)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">DESCRIPTION <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(255)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">IS_SYSTEM <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="sa_module_links" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_module_links</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">19 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">LINK_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">PR_LINK_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">LINK_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(60)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">LINK_NAME_BN <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(500)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SA_MLINK_PAGES <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(10)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">MODULE_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">URL_URI <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(200)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">LINK_DESC <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(100)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SL_NO <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(4)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CREATE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">READ <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">UPDATE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">DELETE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(4)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="sa_modules" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_modules</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">11 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">MODULE_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">MODULE_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(70)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SHORT_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">char(10)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">MODULE_NAME_BN <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(500)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SL_NO <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(4)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">MODULE_ICON <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(100)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="sa_org_mlinks" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_org_mlinks</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">17 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">SA_MLINKS_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SA_MLINK_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(60)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SA_MLINK_PAGES <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(10)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SA_MODULE_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">LINK_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">URL_URI <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(200)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CREATE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">READ <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">UPDATE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">DELETE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(4)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="sa_org_modules" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_org_modules</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">10 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">SA_MODULE_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SA_MODULE_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(70)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">DEFAULT_FLAG <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">MODULE_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="sa_organizations" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_organizations</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">22 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">ORG_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(100)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">PARENT_ORG_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_TYPE_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SLOGAN <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(200)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ABBR <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(8)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">DSCP <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">text</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ESTB_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">date</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ADDR1 <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(160)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ADDR2 <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(160)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ZIP_CODE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(8)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">TEL <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(80)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">PHONE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(80)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">FAX <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(80)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">EMAIL <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(40)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">WEBSITE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(40)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">LOGO <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(100)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="sa_ug_level" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_ug_level</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">10 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">UG_LEVEL_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERGRP_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UGLEVE_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(50)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORDER_SL <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(4)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="sa_uglw_mlink" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_uglw_mlink</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">19 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">SA_UGLWM_LINK <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SA_MLINKS_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USER_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">bigint(20)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERGRP_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UG_LEVEL_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SA_MODULE_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">LINK_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CREATE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">READ <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">UPDATE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">DELETE <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(4)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">URL_URI <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(200)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="sa_ugw_mlink" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_ugw_mlink</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">12 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">SA_UGWM_LINK <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SA_MODULE_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">SA_MLINKS_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">LINK_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERGRP_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">URL_URI <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(200)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="sa_user_group" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_user_group</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">8 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">USERGRP_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERGRP_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(50)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="sa_user_wmgl" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_user_wmgl</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">7 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">USRWMGL_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">bigint(20)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USER_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">bigint(20)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERGRP_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERLVL_ID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">DEFAULT_FG <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/0</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr></tbody></table></section><section id="sa_users" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">sa_users</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">18 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">USER_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">bigint(20)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">FULL_NAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(100)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERNAME <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(16)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERPW <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(60)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">EFECT_FROM_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">date</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">EXPR_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">date</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ORG_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERGRP_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERLVL_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USER_ENTITY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(4)</td><td class="text-xs text-slate-400">YES/U</td></tr><tr><td class="font-mono text-sm py-1.5">EMAIL <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(40)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERIMG <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(100)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">LAST_LOGIN_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="user_roles" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-emerald-50/50">
-    <h2 class="font-bold text-slate-800">user_roles</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">RBAC (new)</span>
-    <span class="ml-auto text-xs text-slate-400">7 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">USER_ROLE_ID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USER_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600">FK_UR_USER: → sa_users.USER_ID</div></td><td class="font-mono text-xs text-slate-500">bigint(20)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">USERGRP_ID <span class="badge-idx">IDX</span><div class="text-[11px] text-indigo-600">FK_UR_ROLE: → roles.USERGRP_ID</div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">DEFAULT_FG <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">tinyint(1)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(10) unsigned</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">timestamp</td><td class="text-xs text-slate-400">NO/current_timestamp()</td></tr></tbody></table></section><section id="userdaogroup" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">userdaogroup</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">7 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">DAOGroupID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UserID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="usergroups" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">usergroups</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">7 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">GroupID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UserID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">ACTIVE_STATUS <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/1</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">CRE_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/current_timestamp()</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_BY <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UPD_DT <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">datetime</td><td class="text-xs text-slate-400">YES/NULL</td></tr></tbody></table></section><section id="users" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-slate-200/60 overflow-hidden">
-  <header class="flex items-center gap-2 px-5 py-3 border-b border-slate-100 bg-sky-50/50">
-    <h2 class="font-bold text-slate-800">users</h2>
-    <span class="text-[11px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">legacy</span>
-    <span class="ml-auto text-xs text-slate-400">6 columns</span>
-  </header>
-  <table class="w-full text-left"><thead><tr class="text-[11px] uppercase text-slate-400 border-b border-slate-100"><th class="px-5 py-2">Column</th><th class="px-5 py-2">Type</th><th class="px-5 py-2">Null/Default</th></tr></thead>
-  <tbody class="divide-y divide-slate-50"><tr><td class="font-mono text-sm py-1.5">UserID <span class="badge-pk">PK</span><div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">LoginID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(50)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">UserName1 <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(100)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">Password <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">varchar(100)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">OwnerID <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">NO/NULL</td></tr><tr><td class="font-mono text-sm py-1.5">IsActive <div class="text-[11px] text-indigo-600"></div></td><td class="font-mono text-xs text-slate-500">int(11)</td><td class="text-xs text-slate-400">YES/0</td></tr></tbody></table></section>
-<footer class="text-xs text-slate-400 pb-8">Regenerate: <code>mysqldump --no-data bnsis_permission &gt; docs/database-schema.sql</code></footer>
-</main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>bnsis_permission — Full Database Schema (19 Tables)</title>
+<meta name="description" content="Complete visual database schema UI for the Dynamic User Role &amp; Permission Management Module — all 19 tables with columns, keys, indexes and relationships.">
+<style>:root{--ink:#1e293b;--mut:#64748b;--line:#e2e8f0}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f1f5f9;color:var(--ink)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+a{color:inherit;text-decoration:none}
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#312e81 100%);color:#fff;padding:44px 24px 96px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;inset:0;background:radial-gradient(600px 200px at 80% 10%,rgba(56,189,248,.25),transparent),radial-gradient(500px 220px at 15% 90%,rgba(16,185,129,.2),transparent)}
+.hero-in{max-width:1240px;margin:0 auto;position:relative;z-index:1}
+.hero h1{margin:0;font-size:30px;letter-spacing:-.5px}
+.hero h1 code{background:rgba(255,255,255,.12);padding:2px 12px;border-radius:10px;font-size:28px}
+.hero p{margin:10px 0 0;color:#cbd5e1;max-width:780px;font-size:14.5px;line-height:1.6}
+.stats{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px}
+.stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(6px);border-radius:14px;padding:14px 22px;min-width:150px}
+.stat b{display:block;font-size:26px}.stat span{font-size:12px;color:#bfdbfe;text-transform:uppercase;letter-spacing:.08em}
+.wrap{max-width:1240px;margin:-64px auto 0;padding:0 24px;position:relative;z-index:2}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(15,23,42,.06);padding:22px;margin-bottom:26px}
+.card>h2{margin:0 0 4px;font-size:19px;display:flex;align-items:center;gap:10px}
+.card>h2 .dot{width:10px;height:10px;border-radius:50%;background:#059669;display:inline-block}
+.sub{color:var(--mut);font-size:13px;margin:0 0 16px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 0;font-size:12px;color:var(--mut)}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;vertical-align:middle;letter-spacing:.04em}
+.b-pk{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.b-uq{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe}
+.b-fk{background:#fce7f3;color:#9d174d;border:1px solid #fbcfe8}
+.b-idx{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+.nav-grid{display:flex;flex-wrap:wrap;gap:8px}
+.nav-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:12px;font-size:13px;font-weight:600;border:1px solid var(--line);transition:.15s;background:#fff}
+.nav-chip:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(15,23,42,.1)}
+.nc-em{border-color:#a7f3d0;background:#ecfdf5;color:#065f46}.nc-sk{border-color:#bae6fd;background:#f0f9ff;color:#075985}
+.nc{font-size:10.5px;background:rgba(15,23,42,.08);border-radius:99px;padding:1px 8px;font-weight:700}
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:14px}
+.stat-mini{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;transition:.15s;background:#fff}
+.stat-mini:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(15,23,42,.1)}
+.sm-num{font-size:10px;color:#94a3b8;font-weight:800}
+.sm-name{font-weight:700;font-size:13px;font-family:ui-monospace,Menlo,monospace}
+.sm-cols{font-size:11px;color:var(--mut)}
+.m-em .sm-name{color:#047857}.m-sk .sm-name{color:#0369a1}
+.er-scroll{overflow:auto;border:1px solid var(--line);border-radius:12px;background:linear-gradient(#f8fafc 1px,transparent 1px),linear-gradient(90deg,#f8fafc 1px,transparent 1px);background-size:24px 24px}
+.er-node rect{stroke-width:1.6;cursor:pointer;filter:drop-shadow(0 2px 4px rgba(15,23,42,.15))}
+.er-em{fill:#ecfdf5;stroke:#10b981}.er-sk{fill:#f0f9ff;stroke:#38bdf8}
+.er-node:hover rect{stroke-width:2.4}
+.er-t{font:700 12.5px ui-monospace,Menlo,monospace;fill:#0f172a}
+.er-c{font:600 10px system-ui;fill:#64748b}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+.search{flex:1;min-width:220px;position:relative}
+.search input{width:100%;padding:11px 14px 11px 40px;border-radius:12px;border:1.5px solid var(--line);font-size:14px;background:#f8fafc;outline:none;transition:.15s}
+.search input:focus{border-color:#6366f1;background:#fff;box-shadow:0 0 0 4px rgba(99,102,241,.12)}
+.search svg{position:absolute;left:12px;top:11px;color:#94a3b8}
+.btn{padding:10px 16px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-weight:700;cursor:pointer;color:#475569;transition:.15s}
+.btn:hover{border-color:#cbd5e1;background:#f8fafc}
+.seg{display:flex;border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;color:#64748b}
+.seg button.on{background:#0f172a;color:#fff}
+.tbl{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:18px;box-shadow:0 2px 8px rgba(15,23,42,.04);scroll-margin-top:20px}
+.tbl.hidden{display:none}
+.tbl-head{display:flex;align-items:center;gap:12px;padding:15px 20px;cursor:pointer;user-select:none}
+.rbac .tbl-head{background:linear-gradient(90deg,#ecfdf5,#fff)}
+.legacy .tbl-head{background:linear-gradient(90deg,#f0f9ff,#fff)}
+.tbl-head:hover{filter:brightness(.98)}
+.chev{transition:transform .2s;color:#64748b}
+.tbl.open .chev{transform:rotate(90deg)}
+.tbl-head h3{margin:0;font-size:16px}
+.pill{font-size:10px;font-weight:800;letter-spacing:.06em;padding:3px 10px;border-radius:99px;text-transform:uppercase}
+.pill-emerald{background:#d1fae5;color:#065f46}.pill-sky{background:#e0f2fe;color:#075985}
+.meta{margin-left:auto;font-size:12px;color:#94a3b8;white-space:nowrap}
+.tbl-desc{margin:0;padding:12px 20px 0;font-size:13px;color:var(--mut);line-height:1.55}
+.keys,.rels{display:flex;flex-wrap:wrap;gap:6px;padding:10px 20px 0}
+.chip{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;border:1px solid var(--line);background:#f8fafc;color:#475569;font-family:ui-monospace,Menlo,monospace}
+.chip a{text-decoration:underline dotted}
+.chip-pk{background:#fffbeb;border-color:#fde68a;color:#92400e}
+.chip-uq{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
+.chip-out{background:#fdf2f8;border-color:#fbcfe8;color:#9d174d}
+.chip-in{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
+.tbl-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.tbl.open .tbl-body{max-height:4000px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{text-align:left;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;padding:14px 20px 8px;border-bottom:1px solid var(--line);background:#fff}
+tbody td{padding:9px 20px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#f8fafc}
+.c-name code{font-weight:700;color:#0f172a;font-size:13px}
+.c-type code{color:#7c3aed;background:#f5f3ff;padding:2px 8px;border-radius:6px;font-size:11.5px}
+.mut{color:#94a3b8;font-size:11.5px;font-weight:700}
+.dv{color:#0369a1;font-size:11.5px;font-family:ui-monospace,Menlo,monospace;background:#f0f9ff;padding:2px 8px;border-radius:6px}
+.fk-note{font-size:11px;color:#9d174d;margin-top:4px}
+.fk-note a{text-decoration:underline dotted}
+.c-cmt{color:#64748b;font-size:12px}
+footer{text-align:center;color:#94a3b8;font-size:12.5px;padding:30px 0 50px}
+.backtop{position:fixed;right:22px;bottom:22px;width:44px;height:44px;border-radius:14px;background:#0f172a;color:#fff;border:0;cursor:pointer;font-size:18px;box-shadow:0 8px 20px rgba(15,23,42,.3);opacity:0;pointer-events:none;transition:.2s}
+.backtop.show{opacity:1;pointer-events:auto}
+@media print{.hero{padding:20px}.tbl-body{max-height:none!important}.toolbar,.backtop{display:none}.tbl{break-inside:avoid}}
+@media (max-width:720px){.hero h1{font-size:22px}.meta{display:none}}
+</style>
+</head>
+<body>
+<div class="hero"><div class="hero-in">
+<h1>🗄️ Database Schema — <code>bnsis_permission</code></h1>
+<p>Dynamic User Role &amp; Permission Management Module · complete UI design of all <b>19 tables</b> — columns, types, defaults, primary / unique / foreign keys, indexes and relationships — generated from MySQL/MariaDB · updated 2026-10-11</p>
+<div class="stats">
+<div class="stat"><b>19</b><span>Total Tables</span></div>
+<div class="stat"><b style="color:#6ee7b7">5</b><span>RBAC (new)</span></div>
+<div class="stat"><b style="color:#7dd3fc">14</b><span>Legacy</span></div>
+<div class="stat"><b>210</b><span>Columns</span></div>
+<div class="stat"><b>5</b><span>FK Constraints</span></div>
+</div>
+</div></div>
+
+<div class="wrap">
+
+<section class="card" id="index">
+<h2><span class="dot"></span>Table Index — 19 Tables</h2>
+<p class="sub">Click any table to jump to its full column design. <span style="color:#047857;font-weight:700">Green</span> = new RBAC tables · <span style="color:#0369a1;font-weight:700">Blue</span> = legacy tables.</p>
+<div class="nav-grid"><a class="nav-chip nc-em" href="#activity_logs">activity_logs<span class="nc">8</span></a><a class="nav-chip nc-em" href="#permissions">permissions<span class="nc">6</span></a><a class="nav-chip nc-em" href="#role_permissions">role_permissions<span class="nc">6</span></a><a class="nav-chip nc-em" href="#roles">roles<span class="nc">10</span></a><a class="nav-chip nc-em" href="#user_roles">user_roles<span class="nc">7</span></a><a class="nav-chip nc-sk" href="#sa_module_links">sa_module_links<span class="nc">19</span></a><a class="nav-chip nc-sk" href="#sa_modules">sa_modules<span class="nc">11</span></a><a class="nav-chip nc-sk" href="#sa_org_mlinks">sa_org_mlinks<span class="nc">17</span></a><a class="nav-chip nc-sk" href="#sa_org_modules">sa_org_modules<span class="nc">10</span></a><a class="nav-chip nc-sk" href="#sa_organizations">sa_organizations<span class="nc">22</span></a><a class="nav-chip nc-sk" href="#sa_ug_level">sa_ug_level<span class="nc">10</span></a><a class="nav-chip nc-sk" href="#sa_uglw_mlink">sa_uglw_mlink<span class="nc">19</span></a><a class="nav-chip nc-sk" href="#sa_ugw_mlink">sa_ugw_mlink<span class="nc">12</span></a><a class="nav-chip nc-sk" href="#sa_user_group">sa_user_group<span class="nc">8</span></a><a class="nav-chip nc-sk" href="#sa_user_wmgl">sa_user_wmgl<span class="nc">7</span></a><a class="nav-chip nc-sk" href="#sa_users">sa_users<span class="nc">18</span></a><a class="nav-chip nc-sk" href="#userdaogroup">userdaogroup<span class="nc">7</span></a><a class="nav-chip nc-sk" href="#usergroups">usergroups<span class="nc">7</span></a><a class="nav-chip nc-sk" href="#users">users<span class="nc">6</span></a></div>
+<div class="mini-grid"><a class="stat-mini m-em" href="#activity_logs"><span class="sm-num">01</span><span class="sm-name">activity_logs</span><span class="sm-cols">8 cols</span></a><a class="stat-mini m-em" href="#permissions"><span class="sm-num">02</span><span class="sm-name">permissions</span><span class="sm-cols">6 cols</span></a><a class="stat-mini m-em" href="#role_permissions"><span class="sm-num">03</span><span class="sm-name">role_permissions</span><span class="sm-cols">6 cols</span></a><a class="stat-mini m-em" href="#roles"><span class="sm-num">04</span><span class="sm-name">roles</span><span class="sm-cols">10 cols</span></a><a class="stat-mini m-em" href="#user_roles"><span class="sm-num">05</span><span class="sm-name">user_roles</span><span class="sm-cols">7 cols</span></a><a class="stat-mini m-sk" href="#sa_module_links"><span class="sm-num">06</span><span class="sm-name">sa_module_links</span><span class="sm-cols">19 cols</span></a><a class="stat-mini m-sk" href="#sa_modules"><span class="sm-num">07</span><span class="sm-name">sa_modules</span><span class="sm-cols">11 cols</span></a><a class="stat-mini m-sk" href="#sa_org_mlinks"><span class="sm-num">08</span><span class="sm-name">sa_org_mlinks</span><span class="sm-cols">17 cols</span></a><a class="stat-mini m-sk" href="#sa_org_modules"><span class="sm-num">09</span><span class="sm-name">sa_org_modules</span><span class="sm-cols">10 cols</span></a><a class="stat-mini m-sk" href="#sa_organizations"><span class="sm-num">10</span><span class="sm-name">sa_organizations</span><span class="sm-cols">22 cols</span></a><a class="stat-mini m-sk" href="#sa_ug_level"><span class="sm-num">11</span><span class="sm-name">sa_ug_level</span><span class="sm-cols">10 cols</span></a><a class="stat-mini m-sk" href="#sa_uglw_mlink"><span class="sm-num">12</span><span class="sm-name">sa_uglw_mlink</span><span class="sm-cols">19 cols</span></a><a class="stat-mini m-sk" href="#sa_ugw_mlink"><span class="sm-num">13</span><span class="sm-name">sa_ugw_mlink</span><span class="sm-cols">12 cols</span></a><a class="stat-mini m-sk" href="#sa_user_group"><span class="sm-num">14</span><span class="sm-name">sa_user_group</span><span class="sm-cols">8 cols</span></a><a class="stat-mini m-sk" href="#sa_user_wmgl"><span class="sm-num">15</span><span class="sm-name">sa_user_wmgl</span><span class="sm-cols">7 cols</span></a><a class="stat-mini m-sk" href="#sa_users"><span class="sm-num">16</span><span class="sm-name">sa_users</span><span class="sm-cols">18 cols</span></a><a class="stat-mini m-sk" href="#userdaogroup"><span class="sm-num">17</span><span class="sm-name">userdaogroup</span><span class="sm-cols">7 cols</span></a><a class="stat-mini m-sk" href="#usergroups"><span class="sm-num">18</span><span class="sm-name">usergroups</span><span class="sm-cols">7 cols</span></a><a class="stat-mini m-sk" href="#users"><span class="sm-num">19</span><span class="sm-name">users</span><span class="sm-cols">6 cols</span></a></div>
+</section>
+
+<section class="card">
+<h2><span class="dot" style="background:#0284c7"></span>Relationship Diagram (ER Overview)</h2>
+<p class="sub">Solid blue lines = enforced FOREIGN KEY constraints · dashed grey lines = logical relationships (legacy model). Click a node to open its table below.</p>
+<div class="er-scroll">
+<svg width="1300" height="720" viewBox="0 0 1300 720" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#64748b"/></marker></defs>
+<path d="M570 173 Q530 155 490 173" fill="none" stroke="#0ea5e9" stroke-width="1.4" marker-end="url(#arr)"/><path d="M840 173 Q800 155 760 173" fill="none" stroke="#0ea5e9" stroke-width="1.4" marker-end="url(#arr)"/><path d="M1030 173 Q1055 191 1080 173" fill="none" stroke="#0ea5e9" stroke-width="1.4" marker-end="url(#arr)"/><path d="M1175 320 Q1193 258 1175 196" fill="none" stroke="#0ea5e9" stroke-width="1.4" marker-end="url(#arr)"/><path d="M1080 343 Q1055 325 1030 343" fill="none" stroke="#0ea5e9" stroke-width="1.4" marker-end="url(#arr)"/><path d="M1030 343 Q1055 357 1080 343" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M1270 343 Q1184 248 1080 173" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M1175 366 Q921 329 665 320" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M125 66 Q111 193 125 320" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M220 173 Q116 248 30 343" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M395 196 Q381 258 395 320" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M220 43 Q246 197 300 343" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M760 513 Q920 527 1080 513" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M1030 513 Q1055 527 1080 513" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M665 490 Q528 499 395 536" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M395 196 Q381 343 395 490" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M840 343 Q526 414 220 513" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M665 536 Q525 575 395 640" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M935 366 Q790 493 665 640" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M935 366 Q921 503 935 640" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/><path d="M665 490 Q679 428 665 366" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+<g class="er-node" onclick="location.hash='#sa_organizations'"><rect x="30" y="20" width="190" height="46" rx="10" class="er-sk"/><text x="42" y="40" class="er-t">sa_organizations</text><text x="42" y="56" class="er-c">22 columns · legacy</text></g><g class="er-node" onclick="location.hash='#sa_modules'"><rect x="30" y="150" width="190" height="46" rx="10" class="er-sk"/><text x="42" y="170" class="er-t">sa_modules</text><text x="42" y="186" class="er-c">11 columns · legacy</text></g><g class="er-node" onclick="location.hash='#sa_module_links'"><rect x="300" y="150" width="190" height="46" rx="10" class="er-sk"/><text x="312" y="170" class="er-t">sa_module_links</text><text x="312" y="186" class="er-c">19 columns · legacy</text></g><g class="er-node" onclick="location.hash='#permissions'"><rect x="570" y="150" width="190" height="46" rx="10" class="er-em"/><text x="582" y="170" class="er-t">permissions</text><text x="582" y="186" class="er-c">6 columns · RBAC</text></g><g class="er-node" onclick="location.hash='#role_permissions'"><rect x="840" y="150" width="190" height="46" rx="10" class="er-em"/><text x="852" y="170" class="er-t">role_permissions</text><text x="852" y="186" class="er-c">6 columns · RBAC</text></g><g class="er-node" onclick="location.hash='#roles'"><rect x="1080" y="150" width="190" height="46" rx="10" class="er-em"/><text x="1092" y="170" class="er-t">roles</text><text x="1092" y="186" class="er-c">10 columns · RBAC</text></g><g class="er-node" onclick="location.hash='#user_roles'"><rect x="1080" y="320" width="190" height="46" rx="10" class="er-em"/><text x="1092" y="340" class="er-t">user_roles</text><text x="1092" y="356" class="er-c">7 columns · RBAC</text></g><g class="er-node" onclick="location.hash='#sa_users'"><rect x="840" y="320" width="190" height="46" rx="10" class="er-sk"/><text x="852" y="340" class="er-t">sa_users</text><text x="852" y="356" class="er-c">18 columns · legacy</text></g><g class="er-node" onclick="location.hash='#usergroups'"><rect x="570" y="320" width="190" height="46" rx="10" class="er-sk"/><text x="582" y="340" class="er-t">usergroups</text><text x="582" y="356" class="er-c">7 columns · legacy</text></g><g class="er-node" onclick="location.hash='#sa_org_modules'"><rect x="30" y="320" width="190" height="46" rx="10" class="er-sk"/><text x="42" y="340" class="er-t">sa_org_modules</text><text x="42" y="356" class="er-c">10 columns · legacy</text></g><g class="er-node" onclick="location.hash='#sa_org_mlinks'"><rect x="300" y="320" width="190" height="46" rx="10" class="er-sk"/><text x="312" y="340" class="er-t">sa_org_mlinks</text><text x="312" y="356" class="er-c">17 columns · legacy</text></g><g class="er-node" onclick="location.hash='#sa_user_group'"><rect x="570" y="490" width="190" height="46" rx="10" class="er-sk"/><text x="582" y="510" class="er-t">sa_user_group</text><text x="582" y="526" class="er-c">8 columns · legacy</text></g><g class="er-node" onclick="location.hash='#sa_ug_level'"><rect x="840" y="490" width="190" height="46" rx="10" class="er-sk"/><text x="852" y="510" class="er-t">sa_ug_level</text><text x="852" y="526" class="er-c">10 columns · legacy</text></g><g class="er-node" onclick="location.hash='#sa_uglw_mlink'"><rect x="1080" y="490" width="190" height="46" rx="10" class="er-sk"/><text x="1092" y="510" class="er-t">sa_uglw_mlink</text><text x="1092" y="526" class="er-c">19 columns · legacy</text></g><g class="er-node" onclick="location.hash='#sa_ugw_mlink'"><rect x="300" y="490" width="190" height="46" rx="10" class="er-sk"/><text x="312" y="510" class="er-t">sa_ugw_mlink</text><text x="312" y="526" class="er-c">12 columns · legacy</text></g><g class="er-node" onclick="location.hash='#sa_user_wmgl'"><rect x="30" y="490" width="190" height="46" rx="10" class="er-sk"/><text x="42" y="510" class="er-t">sa_user_wmgl</text><text x="42" y="526" class="er-c">7 columns · legacy</text></g><g class="er-node" onclick="location.hash='#userdaogroup'"><rect x="300" y="640" width="190" height="46" rx="10" class="er-sk"/><text x="312" y="660" class="er-t">userdaogroup</text><text x="312" y="676" class="er-c">7 columns · legacy</text></g><g class="er-node" onclick="location.hash='#users'"><rect x="570" y="640" width="190" height="46" rx="10" class="er-sk"/><text x="582" y="660" class="er-t">users</text><text x="582" y="676" class="er-c">6 columns · legacy</text></g><g class="er-node" onclick="location.hash='#activity_logs'"><rect x="840" y="640" width="190" height="46" rx="10" class="er-em"/><text x="852" y="660" class="er-t">activity_logs</text><text x="852" y="676" class="er-c">8 columns · RBAC</text></g>
+</svg>
+</div>
+<div class="legend">
+<span><span class="badge b-pk">PK</span> Primary Key</span>
+<span><span class="badge b-uq">UQ</span> Unique Key</span>
+<span><span class="badge b-fk">FK</span> Foreign Key</span>
+<span><span class="badge b-idx">IDX</span> Index</span>
+</div>
+</section>
+
+<h2 style="margin:8px 4px 14px;font-size:20px">Full Table Designs</h2>
+<div class="toolbar">
+<div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search table or column name… (e.g. USER_ID, role, link)"></div>
+<div class="seg"><button data-m="all" class="on" onclick="filterMode('all')">All (19)</button><button data-m="rbac" onclick="filterMode('rbac')">RBAC (5)</button><button data-m="legacy" onclick="filterMode('legacy')">Legacy (14)</button></div>
+<button class="btn" id="btnExpand" onclick="toggleAll()">Expand all</button>
+<span id="count" style="font-size:12.5px;color:#64748b;font-weight:700"></span>
+</div>
+
+<article id="activity_logs" class="tbl rbac" data-group="rbac" data-cols="8" data-search="activity_logs log_id user_id username action module_link details ip_address cre_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>activity_logs</code></h3>
+    <span class="pill pill-emerald">RBAC · New</span>
+    <span class="meta">8 cols · PK: LOG_ID</span>
+  </div>
+  <p class="tbl-desc">Admin activity audit trail — every login / create / update / delete action is recorded here.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (LOG_ID)</span><span class="chip chip-idx">INDEX IDX_LOG_USER (USER_ID)</span><span class="chip chip-idx">INDEX IDX_LOG_DT (CRE_DT)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th><th>Comment</th></tr></thead><tbody>
+<tr><td class="c-name"><code>LOG_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USER_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERNAME</code> </td><td class="c-type"><code>varchar(50)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>ACTION</code> </td><td class="c-type"><code>varchar(60)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt">login, create_user, update_role ...</td></tr>
+<tr><td class="c-name"><code>MODULE_LINK</code> </td><td class="c-type"><code>varchar(120)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>DETAILS</code> </td><td class="c-type"><code>text</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>IP_ADDRESS</code> </td><td class="c-type"><code>varchar(45)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td><td class="c-cmt"></td></tr>
+  </tbody></table></div>
+</article>
+<article id="permissions" class="tbl rbac" data-group="rbac" data-cols="6" data-search="permissions permission_id link_id action_key display_name active_status cre_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>permissions</code></h3>
+    <span class="pill pill-emerald">RBAC · New</span>
+    <span class="meta">6 cols · PK: PERMISSION_ID · 1 FK · 1 inbound</span>
+  </div>
+  <p class="tbl-desc">Granular CRUD permission definitions derived from module links (create · read · update · delete per link).</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (PERMISSION_ID)</span><span class="chip chip-uq">UNIQUE UQ_PERM_LINK_ACTION (LINK_ID, ACTION_KEY)</span></div>
+  <div class="rels"><span class="chip chip-out">↗ LINK_ID → <a href="#sa_module_links">sa_module_links</a>.LINK_ID</span><span class="chip chip-in">↙ referenced by <a href="#role_permissions">role_permissions</a>.PERMISSION_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th><th>Comment</th></tr></thead><tbody>
+<tr><td class="c-name"><code>PERMISSION_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>LINK_ID</code> <span class="badge b-fk">FK</span><div class="fk-note">FK_PERM_LINK → <a href="#sa_module_links">sa_module_links.LINK_ID</a> · ON DELETE CASCADE</div></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt">FK -&gt; sa_module_links.LINK_ID</td></tr>
+<tr><td class="c-name"><code>ACTION_KEY</code> </td><td class="c-type"><code>varchar(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt">create|read|update|delete</td></tr>
+<tr><td class="c-name"><code>DISPLAY_NAME</code> </td><td class="c-type"><code>varchar(150)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td><td class="c-cmt"></td></tr>
+  </tbody></table></div>
+</article>
+<article id="role_permissions" class="tbl rbac" data-group="rbac" data-cols="6" data-search="role_permissions role_perm_id usergrp_id permission_id active_status cre_by cre_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>role_permissions</code></h3>
+    <span class="pill pill-emerald">RBAC · New</span>
+    <span class="meta">6 cols · PK: ROLE_PERM_ID · 2 FK</span>
+  </div>
+  <p class="tbl-desc">Junction table granting permissions to roles; UNIQUE(role, permission) prevents duplicate grants.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (ROLE_PERM_ID)</span><span class="chip chip-uq">UNIQUE UQ_ROLE_PERM (USERGRP_ID, PERMISSION_ID)</span><span class="chip chip-idx">INDEX IDX_RP_PERM (PERMISSION_ID)</span></div>
+  <div class="rels"><span class="chip chip-out">↗ PERMISSION_ID → <a href="#permissions">permissions</a>.PERMISSION_ID</span><span class="chip chip-out">↗ USERGRP_ID → <a href="#roles">roles</a>.USERGRP_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>ROLE_PERM_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-fk">FK</span><div class="fk-note">FK_RP_ROLE → <a href="#roles">roles.USERGRP_ID</a> · ON DELETE CASCADE</div></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>PERMISSION_ID</code> <span class="badge b-fk">FK</span><span class="badge b-idx">IDX</span><div class="fk-note">FK_RP_PERM → <a href="#permissions">permissions.PERMISSION_ID</a> · ON DELETE CASCADE</div></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="roles" class="tbl rbac" data-group="rbac" data-cols="10" data-search="roles usergrp_id org_id usergrp_name description is_system active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>roles</code></h3>
+    <span class="pill pill-emerald">RBAC · New</span>
+    <span class="meta">10 cols · PK: USERGRP_ID · 2 inbound</span>
+  </div>
+  <p class="tbl-desc">RBAC role master. IS_SYSTEM roles (e.g. Super Admin) cannot be deleted.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (USERGRP_ID)</span><span class="chip chip-idx">INDEX IDX_ROLE_ORG (ORG_ID)</span></div>
+  <div class="rels"><span class="chip chip-in">↙ referenced by <a href="#role_permissions">role_permissions</a>.USERGRP_ID</span><span class="chip chip-in">↙ referenced by <a href="#user_roles">user_roles</a>.USERGRP_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th><th>Comment</th></tr></thead><tbody>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERGRP_NAME</code> </td><td class="c-type"><code>varchar(50)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>DESCRIPTION</code> </td><td class="c-type"><code>varchar(255)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt">role purpose shown in UI</td></tr>
+<tr><td class="c-name"><code>IS_SYSTEM</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td><td class="c-cmt">system roles cannot be deleted</td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_module_links" class="tbl legacy" data-group="legacy" data-cols="19" data-search="sa_module_links link_id pr_link_id link_name link_name_bn sa_mlink_pages module_id url_uri link_desc sl_no create read update delete status active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_module_links</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">19 cols · PK: LINK_ID · 1 inbound</span>
+  </div>
+  <p class="tbl-desc">Legacy menu/action links (pages &amp; buttons) under modules; carries inline CREATE/READ/UPDATE/DELETE flags.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (LINK_ID)</span></div>
+  <div class="rels"><span class="chip chip-in">↙ referenced by <a href="#permissions">permissions</a>.LINK_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>LINK_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>PR_LINK_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_NAME</code> </td><td class="c-type"><code>varchar(60)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_NAME_BN</code> </td><td class="c-type"><code>varchar(500)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MLINK_PAGES</code> </td><td class="c-type"><code>varchar(10)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>MODULE_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>URL_URI</code> </td><td class="c-type"><code>varchar(200)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_DESC</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SL_NO</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>CREATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>READ</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>UPDATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>DELETE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>STATUS</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_modules" class="tbl legacy" data-group="legacy" data-cols="11" data-search="sa_modules module_id module_name short_name module_name_bn sl_no module_icon active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_modules</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">11 cols · PK: MODULE_ID</span>
+  </div>
+  <p class="tbl-desc">Legacy application modules (top-level menu groups) with Bengali names &amp; icons.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (MODULE_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>MODULE_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>MODULE_NAME</code> </td><td class="c-type"><code>varchar(70)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>SHORT_NAME</code> </td><td class="c-type"><code>char(10)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>MODULE_NAME_BN</code> </td><td class="c-type"><code>varchar(500)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SL_NO</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>MODULE_ICON</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_org_mlinks" class="tbl legacy" data-group="legacy" data-cols="17" data-search="sa_org_mlinks sa_mlinks_id sa_mlink_name sa_mlink_pages sa_module_id org_id link_id url_uri create read update delete status active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_org_mlinks</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">17 cols · PK: SA_MLINKS_ID</span>
+  </div>
+  <p class="tbl-desc">Per-organization copies of module links (legacy org-level menu access grants).</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (SA_MLINKS_ID)</span><span class="chip chip-idx">INDEX FK02_ORG_ID (ORG_ID)</span><span class="chip chip-idx">INDEX FK01_SA_MODULE_ID (SA_MODULE_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>SA_MLINKS_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MLINK_NAME</code> </td><td class="c-type"><code>varchar(60)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MLINK_PAGES</code> </td><td class="c-type"><code>varchar(10)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MODULE_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>URL_URI</code> </td><td class="c-type"><code>varchar(200)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CREATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>READ</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>UPDATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>DELETE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>STATUS</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_org_modules" class="tbl legacy" data-group="legacy" data-cols="10" data-search="sa_org_modules sa_module_id sa_module_name org_id default_flag module_id active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_org_modules</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">10 cols · PK: SA_MODULE_ID</span>
+  </div>
+  <p class="tbl-desc">Per-organization module activation — which modules an organization has enabled.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (SA_MODULE_ID)</span><span class="chip chip-idx">INDEX FK01_ORG_ID (ORG_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>SA_MODULE_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MODULE_NAME</code> </td><td class="c-type"><code>varchar(70)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>DEFAULT_FLAG</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>MODULE_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_organizations" class="tbl legacy" data-group="legacy" data-cols="22" data-search="sa_organizations org_id org_name parent_org_id org_type_id slogan abbr dscp estb_dt addr1 addr2 zip_code tel phone fax email website logo active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_organizations</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">22 cols · PK: ORG_ID</span>
+  </div>
+  <p class="tbl-desc">Organization master — name, address, contacts, logo and parent-org hierarchy.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (ORG_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_NAME</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>PARENT_ORG_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_TYPE_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SLOGAN</code> </td><td class="c-type"><code>varchar(200)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ABBR</code> </td><td class="c-type"><code>varchar(8)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>DSCP</code> </td><td class="c-type"><code>text</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ESTB_DT</code> </td><td class="c-type"><code>date</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ADDR1</code> </td><td class="c-type"><code>varchar(160)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ADDR2</code> </td><td class="c-type"><code>varchar(160)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ZIP_CODE</code> </td><td class="c-type"><code>varchar(8)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>TEL</code> </td><td class="c-type"><code>varchar(80)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>PHONE</code> </td><td class="c-type"><code>varchar(80)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>FAX</code> </td><td class="c-type"><code>varchar(80)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>EMAIL</code> </td><td class="c-type"><code>varchar(40)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>WEBSITE</code> </td><td class="c-type"><code>varchar(40)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LOGO</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_ug_level" class="tbl legacy" data-group="legacy" data-cols="10" data-search="sa_ug_level ug_level_id usergrp_id org_id ugleve_name order_sl active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_ug_level</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">10 cols · PK: UG_LEVEL_ID</span>
+  </div>
+  <p class="tbl-desc">User-group level definitions (hierarchy levels used by the legacy permission model).</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (UG_LEVEL_ID)</span><span class="chip chip-idx">INDEX FK04_ORG_ID (ORG_ID)</span><span class="chip chip-idx">INDEX FK01_USERGRP_ID (USERGRP_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>UG_LEVEL_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UGLEVE_NAME</code> </td><td class="c-type"><code>varchar(50)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORDER_SL</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_uglw_mlink" class="tbl legacy" data-group="legacy" data-cols="19" data-search="sa_uglw_mlink sa_uglwm_link sa_mlinks_id org_id user_id usergrp_id ug_level_id sa_module_id link_id create read update delete status url_uri active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_uglw_mlink</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">19 cols · PK: SA_UGLWM_LINK</span>
+  </div>
+  <p class="tbl-desc">Legacy grants: user-group ↔ work/school-level ↔ module-link access.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (SA_UGLWM_LINK)</span><span class="chip chip-idx">INDEX FK01_USER_ID (USER_ID)</span><span class="chip chip-idx">INDEX FK02_SA_MODULE_ID (SA_MODULE_ID)</span><span class="chip chip-idx">INDEX FK01_SA_MLINKS_ID (SA_MLINKS_ID)</span><span class="chip chip-idx">INDEX FK02_USERGRP_ID (USERGRP_ID)</span><span class="chip chip-idx">INDEX FK01_UG_LEVEL_ID (UG_LEVEL_ID)</span><span class="chip chip-idx">INDEX FK05_ORG_ID (ORG_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>SA_UGLWM_LINK</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MLINKS_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>USER_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UG_LEVEL_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MODULE_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CREATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>READ</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>UPDATE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>DELETE</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>STATUS</code> </td><td class="c-type"><code>tinyint(4)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>URL_URI</code> </td><td class="c-type"><code>varchar(200)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_ugw_mlink" class="tbl legacy" data-group="legacy" data-cols="12" data-search="sa_ugw_mlink sa_ugwm_link sa_module_id sa_mlinks_id link_id usergrp_id url_uri org_id active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_ugw_mlink</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">12 cols · PK: SA_UGWM_LINK</span>
+  </div>
+  <p class="tbl-desc">Legacy grants: user-group ↔ module-link access (institution-wide).</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (SA_UGWM_LINK)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>SA_UGWM_LINK</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MODULE_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>SA_MLINKS_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>LINK_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>URL_URI</code> </td><td class="c-type"><code>varchar(200)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_user_group" class="tbl legacy" data-group="legacy" data-cols="8" data-search="sa_user_group usergrp_id org_id usergrp_name active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_user_group</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">8 cols · PK: USERGRP_ID</span>
+  </div>
+  <p class="tbl-desc">Legacy user-group master (predecessor of the new roles table).</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (USERGRP_ID)</span><span class="chip chip-idx">INDEX FK03_ORG_ID (ORG_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_NAME</code> </td><td class="c-type"><code>varchar(50)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_user_wmgl" class="tbl legacy" data-group="legacy" data-cols="7" data-search="sa_user_wmgl usrwmgl_id user_id org_id usergrp_id userlvl_id default_fg active_status">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_user_wmgl</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">7 cols · PK: USRWMGL_ID</span>
+  </div>
+  <p class="tbl-desc">Legacy mapping: user ↔ work/school ↔ group-level assignments.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (USRWMGL_ID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>USRWMGL_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>USER_ID</code> </td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>USERLVL_ID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>DEFAULT_FG</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="sa_users" class="tbl legacy" data-group="legacy" data-cols="18" data-search="sa_users user_id full_name username userpw efect_from_dt expr_dt org_id usergrp_id userlvl_id user_entity email userimg active_status cre_dt cre_by upd_dt upd_by last_login_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>sa_users</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">18 cols · PK: USER_ID · 1 inbound</span>
+  </div>
+  <p class="tbl-desc">Core user accounts — login credentials, profile fields and organization/institution scoping.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (USER_ID)</span><span class="chip chip-idx">INDEX sa_users_ibfk_1 (USERLVL_ID)</span><span class="chip chip-idx">INDEX sa_users_ibfk_2 (USERGRP_ID)</span><span class="chip chip-idx">INDEX sa_users_ibfk_3 (ORG_ID)</span></div>
+  <div class="rels"><span class="chip chip-in">↙ referenced by <a href="#user_roles">user_roles</a>.USER_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th><th>Comment</th></tr></thead><tbody>
+<tr><td class="c-name"><code>USER_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>FULL_NAME</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERNAME</code> </td><td class="c-type"><code>varchar(16)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERPW</code> </td><td class="c-type"><code>varchar(60)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>EFECT_FROM_DT</code> </td><td class="c-type"><code>date</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt">PASSWORD effective from date</td></tr>
+<tr><td class="c-name"><code>EXPR_DT</code> </td><td class="c-type"><code>date</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt">PASSWORD effective expire date</td></tr>
+<tr><td class="c-name"><code>ORG_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERLVL_ID</code> <span class="badge b-idx">IDX</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USER_ENTITY</code> </td><td class="c-type"><code>varchar(4)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT U</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>EMAIL</code> </td><td class="c-type"><code>varchar(40)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERIMG</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>LAST_LOGIN_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+  </tbody></table></div>
+</article>
+<article id="user_roles" class="tbl rbac" data-group="rbac" data-cols="7" data-search="user_roles user_role_id user_id usergrp_id default_fg active_status cre_by cre_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>user_roles</code></h3>
+    <span class="pill pill-emerald">RBAC · New</span>
+    <span class="meta">7 cols · PK: USER_ROLE_ID · 2 FK</span>
+  </div>
+  <p class="tbl-desc">User ↔ role assignment junction; DEFAULT_FG marks the user primary/default group.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (USER_ROLE_ID)</span><span class="chip chip-uq">UNIQUE UQ_USER_ROLE (USER_ID, USERGRP_ID)</span><span class="chip chip-idx">INDEX IDX_UR_ROLE (USERGRP_ID)</span></div>
+  <div class="rels"><span class="chip chip-out">↗ USERGRP_ID → <a href="#roles">roles</a>.USERGRP_ID</span><span class="chip chip-out">↗ USER_ID → <a href="#sa_users">sa_users</a>.USER_ID</span></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th><th>Comment</th></tr></thead><tbody>
+<tr><td class="c-name"><code>USER_ROLE_ID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USER_ID</code> <span class="badge b-fk">FK</span><div class="fk-note">FK_UR_USER → <a href="#sa_users">sa_users.USER_ID</a> · ON DELETE CASCADE</div></td><td class="c-type"><code>bigint(20)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>USERGRP_ID</code> <span class="badge b-fk">FK</span><span class="badge b-idx">IDX</span><div class="fk-note">FK_UR_ROLE → <a href="#roles">roles.USERGRP_ID</a> · ON DELETE CASCADE</div></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>DEFAULT_FG</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt">primary role of the user</td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>tinyint(1)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(10) unsigned</code></td><td class="c-null"><span class="mut">NULL</span></td><td class="c-cmt"></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>timestamp</code></td><td class="c-null"><span class="mut">NOT NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td><td class="c-cmt"></td></tr>
+  </tbody></table></div>
+</article>
+<article id="userdaogroup" class="tbl legacy" data-group="legacy" data-cols="7" data-search="userdaogroup daogroupid userid active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>userdaogroup</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">7 cols</span>
+  </div>
+  <p class="tbl-desc">Legacy DAO (office/institution) ↔ user-group mapping.</p>
+  <div class="keys"></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>DAOGroupID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>UserID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="usergroups" class="tbl legacy" data-group="legacy" data-cols="7" data-search="usergroups groupid userid active_status cre_by cre_dt upd_by upd_dt">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>usergroups</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">7 cols</span>
+  </div>
+  <p class="tbl-desc">Legacy table exposing user groups joined with their DAO scope.</p>
+  <div class="keys"></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>GroupID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>UserID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>ACTIVE_STATUS</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 1</span></td></tr>
+<tr><td class="c-name"><code>CRE_BY</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>CRE_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT current_timestamp()</span></td></tr>
+<tr><td class="c-name"><code>UPD_BY</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+<tr><td class="c-name"><code>UPD_DT</code> </td><td class="c-type"><code>datetime</code></td><td class="c-null"><span class="mut">NULL</span></td></tr>
+  </tbody></table></div>
+</article>
+<article id="users" class="tbl legacy" data-group="legacy" data-cols="6" data-search="users userid loginid username1 password ownerid isactive">
+  <div class="tbl-head" onclick="toggleTbl(this.parentElement)">
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    <h3><code>users</code></h3>
+    <span class="pill pill-sky">Legacy</span>
+    <span class="meta">6 cols · PK: UserID</span>
+  </div>
+  <p class="tbl-desc">Legacy users table kept for backward compatibility with older modules.</p>
+  <div class="keys"><span class="chip chip-pk">PRIMARY KEY (UserID)</span></div>
+  <div class="rels"></div>
+  <div class="tbl-body"><table><thead><tr><th>Column</th><th>Type</th><th>Null / Default</th></tr></thead><tbody>
+<tr><td class="c-name"><code>UserID</code> <span class="badge b-pk">PK</span></td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>LoginID</code> </td><td class="c-type"><code>varchar(50)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>UserName1</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>Password</code> </td><td class="c-type"><code>varchar(100)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>OwnerID</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NOT NULL</span></td></tr>
+<tr><td class="c-name"><code>IsActive</code> </td><td class="c-type"><code>int(11)</code></td><td class="c-null"><span class="mut">NULL</span> <span class="dv">DEFAULT 0</span></td></tr>
+  </tbody></table></div>
+</article>
+
+<footer>bnsis_permission · 19 tables · generated from docs/database-schema.sql · <a href="#index" style="text-decoration:underline">Back to index ↑</a></footer>
+</div>
+<button class="backtop" id="bt" title="Back to top" onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>function toggleTbl(el){el.classList.toggle('open');}
+function setAll(open){
+  document.querySelectorAll('.tbl').forEach(function(t){
+    if(!t.classList.contains('hidden')) t.classList.toggle('open',open);
+  });
+  document.getElementById('btnExpand').textContent=open?'Collapse all':'Expand all';
+}
+function toggleAll(){
+  var anyOpen=[].slice.call(document.querySelectorAll('.tbl:not(.hidden)')).some(function(t){return t.classList.contains('open');});
+  setAll(!anyOpen);
+}
+var mode='all';
+function filterMode(m){
+  mode=m;
+  apply();
+  document.querySelectorAll('.seg button').forEach(function(b){b.classList.toggle('on',b.dataset.m===m);});
+}
+function apply(){
+  var q=document.getElementById('q').value.trim().toLowerCase();
+  var shown=0;
+  document.querySelectorAll('.tbl').forEach(function(t){
+    var okG=(mode==='all')||(t.dataset.group===mode);
+    var okQ=!q||t.dataset.search.indexOf(q)>-1;
+    var vis=okG&&okQ;
+    t.classList.toggle('hidden',!vis);
+    if(vis){shown++;if(q)t.classList.add('open');}
+  });
+  document.getElementById('count').textContent=shown+' of 19 tables';
+  document.querySelectorAll('.nav-chip').forEach(function(a){
+    var el=document.getElementById(a.getAttribute('href').slice(1));
+    a.style.display=(el&&!el.classList.contains('hidden'))?'':'none';
+  });
+}
+window.addEventListener('scroll',function(){document.getElementById('bt').classList.toggle('show',scrollY>600);});
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('q').addEventListener('input',apply);
+  filterMode('all');
+  if(location.hash){
+    var el=document.querySelector(location.hash+'.tbl');
+    if(el){el.classList.add('open');setTimeout(function(){el.scrollIntoView({block:'start'});},60);}
+  }
+});
+</script>
+</body></html>

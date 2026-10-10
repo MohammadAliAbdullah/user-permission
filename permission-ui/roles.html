@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roles — permission-ui</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    brand: {50:'#eef4ff',100:'#dbe6fe',500:'#3b6ff6',600:'#2456e0',700:'#1c46b8',900:'#152a63'}
+  }}} };
+</script>
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</head>
+<body class="h-full bg-slate-100 text-slate-800 antialiased">
+<div x-data="{ sidebar:false }" class="min-h-full">
+
+  <!-- Top bar -->
+  <header class="fixed inset-x-0 top-0 z-40 h-16 bg-brand-900 text-white shadow"><div class="flex h-full items-center justify-between px-4">
+    <div class="flex items-center gap-3">
+      <button @click="sidebar=!sidebar" class="rounded p-2 hover:bg-white/10 lg:hidden" aria-label="Toggle menu"><svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="flex items-center gap-2 font-semibold tracking-wide"><span class="grid h-9 w-9 place-items-center rounded-lg bg-white/10 text-lg">⚓</span><span class="hidden sm:block">BNSIS · Security &amp; Access</span></div>
+      <span class="ml-2 hidden rounded-md bg-emerald-400/20 px-2 py-0.5 text-[11px] font-semibold text-emerald-200 ring-1 ring-emerald-300/30 md:block">roles ↔ sa_user_group</span>
+    </div>
+    <div class="flex items-center gap-4"><span class="hidden text-sm text-white/80 md:block">System Owner (Admin)</span>
+      <span class="hidden rounded-full bg-white/10 px-3 py-1 text-xs md:block">Super Admin</span>
+      <a href="../template/login.html" class="rounded-lg bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20">Sign out</a>
+    </div></div></header>
+
+  <!-- Sidebar -->
+  <aside class="fixed top-16 bottom-0 left-0 z-30 w-72 transform bg-white shadow-xl transition-transform duration-200 translate-x-0 lg:translate-x-0"
+         :class="sidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+    <nav id="sidebar-nav" class="h-full overflow-y-auto px-3 py-4 text-sm"></nav>
+  </aside>
+  <div class="fixed inset-0 z-20 bg-black/40" x-show="sidebar" @click="sidebar=false" x-cloak></div>
+
+  <!-- Main -->
+  <main class="pt-16 lg:pl-72">
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">Roles</h1>
+          <p class="text-sm text-slate-500">Roles = user groups (legacy) until RBAC tables are populated.</p>
+        </div>
+        <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-brand-100">bnsis_permission · live data</span>
+      </div>
+
+<div class="rounded-xl bg-amber-50 p-5 ring-1 ring-amber-200"><h2 class="font-bold text-amber-800">RBAC tables — no data in this dump</h2><p class="mt-1 text-sm text-amber-700">The new dynamic RBAC model (<code>roles</code>, <code>permissions</code>, <code>role_permissions</code>, <code>user_roles</code>) exists in schema but contains 0 rows yet. Until it is populated, <b>user groups act as roles</b> — shown below from live data.</p></div><div class="my-6"></div><div class="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Groups-as-roles</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-50 text-emerald-600 text-base">🛡️</span></div><p class="mt-1 text-2xl font-bold text-slate-900">5</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Members (usergroups)</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-50 text-indigo-600 text-base">👥</span></div><p class="mt-1 text-2xl font-bold text-slate-900">94</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Levels</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-cyan-50 text-cyan-600 text-base">📶</span></div><p class="mt-1 text-2xl font-bold text-slate-900">10</p></div><div class="tile rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60"><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Empty RBAC tables</p><span class="grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-600 text-base">∅</span></div><p class="mt-1 text-2xl font-bold text-slate-900">5</p></div></div><div id="tbl" class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60"></div>
+
+    </div>
+  </main>
+</div>
+<script>PU.mountChrome('roles.html','Roles');</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+const D=window.DB;
+const rows=D.sa_user_group.map(g=>({...g,
+ members:D.usergroups.filter(u=>String(u.GroupID)===String(g.USERGRP_ID)).length,
+ saUsers:D.sa_users.filter(u=>u.USERGRP_ID===g.USERGRP_ID).length,
+ grants:D.sa_uglw_mlink.filter(a=>a.USERGRP_ID===g.USERGRP_ID).length,
+ levels:D.sa_ug_level.filter(l=>l.USERGRP_ID===g.USERGRP_ID).map(l=>l.UGLEVE_NAME).join(', ')}));
+const cols=[{key:'USERGRP_ID',label:'ID'},{key:'USERGRP_NAME',label:'Role (Group)'},{key:'levels',label:'Levels'},
+ {key:'members',label:'Members',render:v=>'<span class="pill pill-neutral">'+v+'</span>'},
+ {key:'saUsers',label:'Accounts',render:v=>'<span class="pill pill-neutral">'+v+'</span>'},
+ {key:'grants',label:'Link grants',render:v=>'<span class="pill pill-neutral">'+v.toLocaleString()+'</span>'},
+ {key:'ACTIVE_STATUS',label:'Status',render:v=>PU.pill(v)}];
+const draw=PU.table('tbl',rows,cols,{perPage:10});
+
+function bindFilter(rows, cols, draw, fid){
+  const q=document.getElementById('q');
+  const f=fid?document.getElementById(fid):null;
+  function apply(){
+    let list=rows;
+    if(f&&f.value) list=list.filter(r=>String(r[f.dataset.key])==f.value);
+    const s=(q.value||'').toLowerCase();
+    if(s) list=list.filter(r=>cols.some(c=>String(r[c.key]??'').toLowerCase().includes(s)));
+    draw(list);
+  }
+  q.addEventListener('input',apply);
+  if(f) f.addEventListener('change',apply);
+  document.getElementById('btn-csv').onclick=()=>{const e=document.getElementById('q');PU.csv(document.title.split(' —')[0],rows,cols)};
+}
+bindFilter(rows,cols,draw);</script>
+</body>
+</html>
