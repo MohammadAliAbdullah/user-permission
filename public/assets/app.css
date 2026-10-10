@@ -1,0 +1,15 @@
+/* BNSIS admin panel — small custom layer on top of Tailwind CDN */
+[x-cloak] { display: none !important; }
+
+/* Slim scrollbars for sidebar & tables */
+#app-nav::-webkit-scrollbar, .overflow-x-auto::-webkit-scrollbar { width: 6px; height: 6px; }
+#app-nav::-webkit-scrollbar-thumb, .overflow-x-auto::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+/* Focus ring polish for checkbox-heavy permission matrix */
+.perm-cb:focus { outline: 2px solid #dbe6fe; outline-offset: 1px; }
+
+/* Print-friendly activity log */
+@media print {
+  header, aside, nav { display: none !important; }
+  main { padding-top: 0 !important; }
+}

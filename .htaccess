@@ -1,0 +1,5 @@
+# Route everything to the public/ front directory (Apache)
+RewriteEngine On
+RewriteRule ^$ public/ [L]
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ public/$1 [L]
