@@ -1,4 +1,3 @@
--- bnsis_permission full schema (generated Oct 11 2026)
 /*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19  Distrib 10.11.18-MariaDB, for debian-linux-gnu (x86_64)
 --
@@ -36,7 +35,7 @@ CREATE TABLE `activity_logs` (
   PRIMARY KEY (`LOG_ID`),
   KEY `IDX_LOG_USER` (`USER_ID`),
   KEY `IDX_LOG_DT` (`CRE_DT`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Admin activity trail';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Admin activity trail';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,7 +55,7 @@ CREATE TABLE `permissions` (
   PRIMARY KEY (`PERMISSION_ID`),
   UNIQUE KEY `UQ_PERM_LINK_ACTION` (`LINK_ID`,`ACTION_KEY`),
   CONSTRAINT `FK_PERM_LINK` FOREIGN KEY (`LINK_ID`) REFERENCES `sa_module_links` (`LINK_ID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1058 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Granular CRUD permissions derived from module links';
+) ENGINE=InnoDB AUTO_INCREMENT=1060 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Granular CRUD permissions derived from module links';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +77,7 @@ CREATE TABLE `role_permissions` (
   KEY `IDX_RP_PERM` (`PERMISSION_ID`),
   CONSTRAINT `FK_RP_PERM` FOREIGN KEY (`PERMISSION_ID`) REFERENCES `permissions` (`PERMISSION_ID`) ON DELETE CASCADE,
   CONSTRAINT `FK_RP_ROLE` FOREIGN KEY (`USERGRP_ID`) REFERENCES `roles` (`USERGRP_ID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2443 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Permissions granted to roles';
+) ENGINE=InnoDB AUTO_INCREMENT=2449 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Permissions granted to roles';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -401,7 +400,7 @@ CREATE TABLE `sa_users` (
   KEY `sa_users_ibfk_1` (`USERLVL_ID`),
   KEY `sa_users_ibfk_2` (`USERGRP_ID`),
   KEY `sa_users_ibfk_3` (`ORG_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=905 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Basic information of application user ';
+) ENGINE=InnoDB AUTO_INCREMENT=906 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Basic information of application user ';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,7 +423,7 @@ CREATE TABLE `user_roles` (
   KEY `IDX_UR_ROLE` (`USERGRP_ID`),
   CONSTRAINT `FK_UR_ROLE` FOREIGN KEY (`USERGRP_ID`) REFERENCES `roles` (`USERGRP_ID`) ON DELETE CASCADE,
   CONSTRAINT `FK_UR_USER` FOREIGN KEY (`USER_ID`) REFERENCES `sa_users` (`USER_ID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Users assigned to roles';
+) ENGINE=InnoDB AUTO_INCREMENT=145 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Users assigned to roles';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -490,4 +489,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-10 16:31:56
+-- Dump completed on 2026-10-10 16:37:02
