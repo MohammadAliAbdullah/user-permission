@@ -4,7 +4,7 @@
     <h1 class="text-2xl font-bold text-slate-900">Dashboard</h1>
     <p class="text-sm text-slate-500">Welcome back, <?= e(\Auth::user()['FULL_NAME']) ?> — role(s): <?= e(implode(', ', $roleNames)) ?></p>
   </div>
-  <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-brand-100">bnsis_db · live data</span>
+  <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-brand-100">bnsis_permission · live data</span>
 </div>
 
 <!-- Stat cards -->

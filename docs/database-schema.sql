@@ -1,8 +1,8 @@
--- bnsis_db full schema (generated Oct 11 2026)
+-- bnsis_permission full schema (generated Oct 11 2026)
 /*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19  Distrib 10.11.18-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: bnsis_db
+-- Host: localhost    Database: bnsis_permission
 -- ------------------------------------------------------
 -- Server version	10.11.18-MariaDB-0+deb12u1
 

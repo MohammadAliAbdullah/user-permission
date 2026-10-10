@@ -1,12 +1,12 @@
 -- =====================================================================
--- Migration 001 : Auth & RBAC core for bnsis_db
+-- Migration 001 : Auth & RBAC core for bnsis_permission
 -- Dynamic User Role & Permission Management Module
 -- ADDITIVE ONLY: creates new tables, adds compatible columns/indexes,
 -- seeds roles/permissions and backfills links. Never deletes data.
 -- Idempotent: safe to run multiple times.
 -- =====================================================================
-CREATE DATABASE IF NOT EXISTS `bnsis_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `bnsis_db`;
+CREATE DATABASE IF NOT EXISTS `bnsis_permission` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `bnsis_permission`;
 
 -- ---------------------------------------------------------------
 -- 1. Roles (maps onto legacy sa_user_group; USERGRP_ID kept as PK)
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `activity_logs` (
 -- 6. Compatible column additions on legacy tables (nullable, no data loss)
 -- ---------------------------------------------------------------
 SET @c := IF((SELECT COUNT(*) FROM information_schema.COLUMNS
-              WHERE TABLE_SCHEMA='bnsis_db' AND TABLE_NAME='sa_users' AND COLUMN_NAME='LAST_LOGIN_DT')=0,
+              WHERE TABLE_SCHEMA='bnsis_permission' AND TABLE_NAME='sa_users' AND COLUMN_NAME='LAST_LOGIN_DT')=0,
    "ALTER TABLE `sa_users` ADD COLUMN `LAST_LOGIN_DT` datetime NULL", "SELECT 'sa_users.LAST_LOGIN_DT exists'");
 PREPARE s FROM @c; EXECUTE s; DEALLOCATE PREPARE s;
 

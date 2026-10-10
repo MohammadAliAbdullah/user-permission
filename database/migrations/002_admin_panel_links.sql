@@ -3,7 +3,7 @@
 -- menu visibility & CRUD permissions for the new screens are data-driven.
 -- Idempotent (INSERT IGNORE on explicit LINK_IDs).
 -- =====================================================================
-USE `bnsis_db`;
+USE `bnsis_permission`;
 
 INSERT IGNORE INTO `sa_module_links`
   (LINK_ID, PR_LINK_ID, LINK_NAME, LINK_NAME_BN, SA_MLINK_PAGES, MODULE_ID, URL_URI, LINK_DESC, SL_NO,

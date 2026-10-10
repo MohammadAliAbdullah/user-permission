@@ -1,6 +1,6 @@
 <?php
 /**
- * PDO singleton for bnsis_db (MySQL/MariaDB).
+ * PDO singleton for bnsis_permission (MySQL/MariaDB).
  */
 declare(strict_types=1);
 

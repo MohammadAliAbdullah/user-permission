@@ -37,9 +37,9 @@ function sync_user_roles(int $userId, int $primaryGrp, array $extraRoleIds, int 
     $ids = array_unique(array_filter(array_merge([$primaryGrp], $extraRoleIds), fn($r) => (int)$r > 0));
     foreach ($ids as $rid) {
         Database::statement(
-            'INSERT INTO user_roles (USER_ID, USERGRP_ID, ORG_ID, ACTIVE_STATUS, CRE_BY, CRE_DT)
-             VALUES (?,?,?,?,?,NOW())',
-            [$userId, (int)$rid, $orgId, 1, (int)(Auth::user()['USER_ID'] ?? 1)]);
+            'INSERT INTO user_roles (USER_ID, USERGRP_ID, DEFAULT_FG, ACTIVE_STATUS, CRE_BY, CRE_DT)
+             VALUES (?,?,?,1,?,NOW())',
+            [$userId, (int)$rid, (int)($rid === $primaryGrp), (int)(Auth::user()['USER_ID'] ?? 1)]);
     }
 }
 
@@ -134,7 +134,7 @@ $menu = Auth::menu();
 if ($action === 'dashboard' || $action === '') {
     $stats = [
         ['label' => 'Users',      'value' => (int)Database::selectOne('SELECT COUNT(*) c FROM sa_users')['c'],
-         'icon' => '👤', 'bg' => 'bg-brand-50',   'hint' => 'Accounts in bnsis_db'],
+         'icon' => '👤', 'bg' => 'bg-brand-50',   'hint' => 'Accounts in bnsis_permission'],
         ['label' => 'Roles',      'value' => (int)Database::selectOne('SELECT COUNT(*) c FROM roles WHERE ACTIVE_STATUS=1')['c'],
          'icon' => '🛡️', 'bg' => 'bg-emerald-50', 'hint' => 'Active roles'],
         ['label' => 'Permissions','value' => (int)Database::selectOne('SELECT COUNT(*) c FROM role_permissions WHERE ACTIVE_STATUS=1')['c'],
