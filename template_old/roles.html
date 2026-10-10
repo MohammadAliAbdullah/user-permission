@@ -1,0 +1,1491 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roles</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    brand: {50:'#eef4ff',100:'#dbe6fe',500:'#3b6ff6',600:'#2456e0',700:'#1c46b8',900:'#152a63'}
+  }}}}
+</script>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body class="h-full bg-slate-100 text-slate-800 antialiased">
+<div x-data="{ sidebar:false, openGrp: {} }"
+     x-init="openGrp = JSON.parse(localStorage.getItem('openGrp')||'{}')"
+     class="min-h-full">
+
+    <!-- Top bar -->
+  <header class="fixed inset-x-0 top-0 z-40 h-16 bg-brand-900 text-white shadow">
+    <div class="flex h-full items-center justify-between px-4">
+      <div class="flex items-center gap-3">
+        <button @click="sidebar=!sidebar" class="rounded p-2 hover:bg-white/10 lg:hidden" aria-label="Toggle menu">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="flex items-center gap-2 font-semibold tracking-wide">
+          <span class="grid h-9 w-9 place-items-center rounded-lg bg-white/10 text-lg">⚓</span>
+          <span class="hidden sm:block">BNSIS · Security &amp; Access</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="hidden text-sm text-white/80 md:block">System Owner (Admin)</span>
+        <span class="hidden rounded-full bg-white/10 px-3 py-1 text-xs md:block">Super Admin, System Administrator</span>
+        <form method="post" action="#">
+          <input type="hidden" name="_csrf" value="d3b2409e0a77083ec3b63a8b0bc2c64537efcd9538297517593c52831f368ef4">          <button class="rounded-lg bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20">Sign out</button>
+        </form>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="fixed top-16 bottom-0 left-0 z-30 w-72 transform bg-white shadow-xl transition-transform duration-200
+                lg:translate-x-0"
+         :class="sidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+    <nav class="h-full overflow-y-auto px-3 py-4 text-sm" id="app-nav">
+      <a href="index.html"
+         class="mb-1 flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-slate-600 hover:bg-slate-50">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10h5v-6h4v6h5V10"/></svg>
+        Dashboard
+      </a>
+
+                      <div class="mt-1">
+          <button @click="openGrp['m1'] = !openGrp['m1']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Security &amp; Access            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m1'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m1']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Modules">Modules</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Module Links">Module Links</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Organization Modules">Organization Modules</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="All User Group">All User Group</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Assign Link To Group">Assign Link To Group</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="User Setup">User Setup</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Admin Dashboard">Admin Dashboard</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Users">Users</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 bg-brand-50 text-brand-700 font-medium"
+                           title="Roles">Roles</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Role Permissions">Role Permissions</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Modules &amp; Links">Modules &amp; Links</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Activity Log">Activity Log</a>
+                                          </li>
+                        </ul>
+        </div>
+                      <div class="mt-1">
+          <button @click="openGrp['m2'] = !openGrp['m2']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Basic Code            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m2'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m2']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Base Setup">Base Setup</a>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Organization Information</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Organization setup">Organization setup</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Branch &amp; Rank Information</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="DAO Group">DAO Group</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Branch Setup">Branch Setup</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Equivalent Rank">Equivalent Rank</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Rank">Rank</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Navy Administrative Information</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Zone">Zone</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Area">Area</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Ship type">Ship type</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Ship/Establishment">Ship/Establishment</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Unit Type">Unit Type</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Posting Unit">Posting Unit</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Administrative Relationship">Administrative Relationship</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Ship Migration">Ship Migration</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Bangladesh Administrative Info</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Division">Division</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="District">District</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Police Station">Police Station</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Relationship">Relationship</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Public Examination</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Exam Level">Exam Level</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Exam Name">Exam Name</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Board/University">Board/University</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Subject/Group">Subject/Group</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Relationship">Relationship</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Navy Examination</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Exam Level">Exam Level</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Exam Type">Exam Type</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Exam Name">Exam Name</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Relationship">Relationship</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Examination Result/Grading</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Examination Result">Examination Result</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Examination Grade">Examination Grade</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Part ll information</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Trade">Trade</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Part">Part</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Other Specialization </span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Specialization  Category">Specialization  Category</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Specialization">Specialization</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Traning / Course</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Training Level">Training Level</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Training Type">Training Type</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Training Name">Training Name</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Relationship">Relationship</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Traning Org/ Instituate</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Trainning Organization">Trainning Organization</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Training Institute">Training Institute</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Medal / Honour Information</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Medal">Medal</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Jesthata padak">Jesthata padak</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Honour">Honour</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Foreign visit information</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Country">Country</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Visit Classification">Visit Classification</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Visit Information">Visit Information</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Entry Type">Entry Type</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Appointment Type">Appointment Type</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Batch Number">Batch Number</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Relation to next of kin">Relation to next of kin</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="DAO Number">DAO Number</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Willing/Not Willing Event">Willing/Not Willing Event</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Security Clearance Type">Security Clearance Type</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Language Name">Language Name</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Fraudulent category">Fraudulent category</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Offence Category">Offence Category</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Retirement Causes">Retirement Causes</a>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Pension</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Allowance">Allowance</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Children Allowance">Children Allowance</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Age Value">Age Value</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Report Setup</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Report Column Info">Report Column Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Report Type">Report Type</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Report Sub Type">Report Sub Type</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="ReportType Column">ReportType Column</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Report Column Setup">Report Column Setup</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Report Column Alias">Report Column Alias</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Others setup</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Medical Disease">Medical Disease</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Point Selection">Point Selection</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Medical Category">Medical Category</a>
+                                          </li>
+              </ul>
+                                          </li>
+                        </ul>
+        </div>
+                      <div class="mt-1">
+          <button @click="openGrp['m3'] = !openGrp['m3']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Special Transactions            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m3'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m3']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Sailors Information</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Capturing New Recruit Info">Capturing New Recruit Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Sailor Details">Sailor Details</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Overwight Information">Overwight Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Branch Change">Branch Change</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Assessment Infromation">Assessment Infromation</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Sailor Remarks">Sailor Remarks</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Foreign Visit Information">Foreign Visit Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Language Information">Language Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="DO`s Remarks">DO`s Remarks</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Instructor Service">Instructor Service</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Opinion Entry">Opinion Entry</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Fraudulent Entry Information">Fraudulent Entry Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="BN Roster Information">BN Roster Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Specialization Information">Specialization Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Security Clearance Info">Security Clearance Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Nominee Information">Nominee Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Navy ID Info">Navy ID Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="MLR Info">MLR Info</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Others Informations</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Yearly Course Plan">Yearly Course Plan</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="DAO Amendmen">DAO Amendmen</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Branch and Rank wise Sanction">Branch and Rank wise Sanction</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Unit wise Sanction">Unit wise Sanction</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Organization Wise sanction">Organization Wise sanction</a>
+                                          </li>
+              </ul>
+                                          </li>
+                        </ul>
+        </div>
+                      <div class="mt-1">
+          <button @click="openGrp['m4'] = !openGrp['m4']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Regular Transactions            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m4'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m4']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Exam /Test Information">Exam /Test Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Training/Course Info">Training/Course Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Leave Information">Leave Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Re-Engagement Info">Re-Engagement Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Medical Category Info">Medical Category Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Transfer  Execute">Transfer  Execute</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Transfer Infromation">Transfer Infromation</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Movement History">Movement History</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Temporary Movement Info">Temporary Movement Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="GCB Award/Restore">GCB Award/Restore</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Marriage Informations">Marriage Informations</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Children Infromation">Children Infromation</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Academic Information">Academic Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="PFT Information">PFT Information</a>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Honor Activities</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Medal Information">Medal Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Honor Information">Honor Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Jesthata padak Information">Jesthata padak Information</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Punishment Activities</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Punishment Information">Punishment Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Mark Run/Absent info">Mark Run/Absent info</a>
+                                          </li>
+              </ul>
+                                          </li>
+                        </ul>
+        </div>
+                      <div class="mt-1">
+          <button @click="openGrp['m11'] = !openGrp['m11']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Reports Preparation            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m11'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m11']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Training/Course Roster Criteria">Training/Course Roster Criteria</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Report Designer">Report Designer</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Query Tool">Query Tool</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Set Selection Criteria">Set Selection Criteria</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="BN Roster Preparation">BN Roster Preparation</a>
+                                          </li>
+                        </ul>
+        </div>
+                      <div class="mt-1">
+          <button @click="openGrp['m9'] = !openGrp['m9']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Reports View/Print            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m9'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m9']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Training /Course Roster">Training /Course Roster</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Strength By Branch">Strength By Branch</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Strength By BD Admin">Strength By BD Admin</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Sailor Nominal Roll">Sailor Nominal Roll</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Statistics of UN Mission ">Statistics of UN Mission </a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Sailor Profile">Sailor Profile</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Transfer Proposal">Transfer Proposal</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="DAO Preview/Publish">DAO Preview/Publish</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Annual Assessment of Sailor">Annual Assessment of Sailor</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Recommendation Not Received">Recommendation Not Received</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Archive">Archive</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Data Entry State">Data Entry State</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Yearly Course Plan">Yearly Course Plan</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Not Continuous VG">Not Continuous VG</a>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Report View/Print</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="View Report">View Report</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Deputation sailor">Deputation sailor</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Reports Preparation</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Single Report">Single Report</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Relational Report">Relational Report</a>
+                                          </li>
+              </ul>
+                                          </li>
+                        </ul>
+        </div>
+                      <div class="mt-1">
+          <button @click="openGrp['m5'] = !openGrp['m5']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Processes            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m5'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m5']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Preliminary/Final allocation of Official Number">Preliminary/Final allocation of Official Number</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Missing Zero Engagements">Missing Zero Engagements</a>
+                                          </li>
+                        </ul>
+        </div>
+                      <div class="mt-1">
+          <button @click="openGrp['m6'] = !openGrp['m6']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Promotion Activities            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m6'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m6']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Set Roster Criteria">Set Roster Criteria</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Prepare Roster">Prepare Roster</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Roster Criteria (MCPO &amp; HSLT)">Roster Criteria (MCPO &amp; HSLT)</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Promotion Approve">Promotion Approve</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Roster Prepare (MCPO &amp; HSLT)">Roster Prepare (MCPO &amp; HSLT)</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Promotion Execute">Promotion Execute</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Promotion Information">Promotion Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Recommendation">Recommendation</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="NQ &amp; Acting Remove">NQ &amp; Acting Remove</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Re-Advancement">Re-Advancement</a>
+                                          </li>
+                        </ul>
+        </div>
+                      <div class="mt-1">
+          <button @click="openGrp['m7'] = !openGrp['m7']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Retirement Informations            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m7'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m7']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Transactions</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Capturing Retired Personnel">Capturing Retired Personnel</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Retirement Process">Retirement Process</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Finalize Retirement">Finalize Retirement</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Re-Entries Information">Re-Entries Information</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">History Transactions</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Sailor Details">Sailor Details</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Assessment Information">Assessment Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Foreign visit info">Foreign visit info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Exam/Test Information">Exam/Test Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Specialization Information">Specialization Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Training / Course Info">Training / Course Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Movement History">Movement History</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Navy ID Info">Navy ID Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Recommendation">Recommendation</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="GCB Award/Restore">GCB Award/Restore</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Leave Info">Leave Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Re-Engagement Info">Re-Engagement Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Medical Category Info">Medical Category Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Marriage Information">Marriage Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Nominee Information">Nominee Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Childen Information">Childen Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Academic Info">Academic Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Medal Information">Medal Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Honor Information">Honor Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Jesthata Padak Info">Jesthata Padak Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Punishmet Information">Punishmet Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Mark Run/Absent Info">Mark Run/Absent Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Promotion Information">Promotion Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Readvancement Info">Readvancement Info</a>
+                                          </li>
+              </ul>
+                                          </li>
+                        </ul>
+        </div>
+                      <div class="mt-1">
+          <button @click="openGrp['m10'] = !openGrp['m10']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Pension Informations            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m10'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m10']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Pension</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Pensioner Information">Pensioner Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Family Pension">Family Pension</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Pension Sell">Pension Sell</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Regular Pension">Regular Pension</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Protinidhi">Protinidhi</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Pension Calculator">Pension Calculator</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Pensioners Profile">Pensioners Profile</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="STC Information">STC Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="NOC Information">NOC Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Death Infromaton">Death Infromaton</a>
+                                          </li>
+              </ul>
+                                          </li>
+                                  <li>
+                                              <span class="block px-2 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Other</span>
+                        <ul class="ml-2 border-l border-slate-100 pl-2">                    <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="DSP Fund Loan Taken">DSP Fund Loan Taken</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="DSP Fund Loan Defaulter">DSP Fund Loan Defaulter</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Report">Report</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="ID Card Issue &amp; Reissue">ID Card Issue &amp; Reissue</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Change Bank Address Information">Change Bank Address Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Freedom Fighter List">Freedom Fighter List</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Veteran Allowance">Veteran Allowance</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Widow Allowance">Widow Allowance</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Pension Book Information">Pension Book Information</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Fatale Case Corection">Fatale Case Corection</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Pension Held / Stop">Pension Held / Stop</a>
+                                          </li>
+              </ul>
+                                          </li>
+                        </ul>
+        </div>
+                      <div class="mt-1">
+          <button @click="openGrp['m12'] = !openGrp['m12']; localStorage.setItem('openGrp', JSON.stringify(openGrp))"
+                  class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-semibold text-slate-700 hover:bg-slate-50">
+            <span class="flex items-center gap-2">
+              <span class="text-brand-600">◆</span> Archive            </span>
+            <svg class="h-4 w-4 transition" :class="openGrp['m12'] && 'rotate-90'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <ul x-show="openGrp['m12']" x-collapse class="ml-3 border-l border-slate-200 pl-2">
+                                <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Archive Info">Archive Info</a>
+                                          </li>
+                                  <li>
+                                              <a href="modules.html"
+                           class="block truncate rounded px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+                           title="Archive History">Archive History</a>
+                                          </li>
+                        </ul>
+        </div>
+      
+      <div class="mt-4 border-t border-slate-200 pt-3">
+        <p class="px-3 text-[11px] uppercase tracking-wider text-slate-400">Administration</p>
+        <a href="users.html" class="mt-1 block rounded px-3 py-2 text-slate-600 hover:bg-slate-50">👤 Users</a>
+        <a href="roles.html" class="block rounded px-3 py-2 bg-brand-50 text-brand-700 font-medium">🛡️ Roles</a>
+        <a href="permissions.html" class="block rounded px-3 py-2 text-slate-600 hover:bg-slate-50">🔑 Permissions</a>
+        <a href="modules.html" class="block rounded px-3 py-2 text-slate-600 hover:bg-slate-50">📦 Modules &amp; Links</a>
+      </div>
+    </nav>
+  </aside>
+  <div class="fixed inset-0 z-20 bg-black/40" x-show="sidebar" @click="sidebar=false" x-cloak></div>
+  
+  <main class="pt-16 lg:pl-72">
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+  <div>
+    <h1 class="text-2xl font-bold text-slate-900">Roles</h1>
+    <p class="text-sm text-slate-500">Group users and grant them CRUD access to application modules.</p>
+  </div>
+      <a href="role-form.html"
+       class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-brand-700">+ New Role</a>
+  </div>
+
+<div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div class="flex flex-col rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60 transition hover:shadow-md">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="font-semibold text-slate-800">Super Admin            <span class="ml-1 rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-amber-700 ring-1 ring-amber-200">System</span>          </h3>
+          <p class="mt-0.5 text-xs text-slate-400">Unrestricted system owner - bypasses all permission checks</p>
+        </div>
+                  <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">Active</span>
+              </div>
+
+      <dl class="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Users</dt><dd class="font-bold text-slate-700">1</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Perms</dt><dd class="font-bold text-slate-700">940</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Modules</dt><dd class="font-bold text-slate-700">235</dd></div>
+      </dl>
+
+      <div class="mt-4 flex gap-2 border-t border-slate-100 pt-4">
+                  <a href="permissions.html"
+             class="flex-1 rounded-lg bg-brand-50 px-3 py-2 text-center text-xs font-semibold text-brand-700 hover:bg-brand-100">Permissions</a>
+                          <a href="role-form.html"
+             class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-center text-xs font-medium text-slate-600 hover:bg-slate-50">Edit</a>
+                      </div>
+    </div>
+      <div class="flex flex-col rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60 transition hover:shadow-md">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="font-semibold text-slate-800">Data Entry User                      </h3>
+          <p class="mt-0.5 text-xs text-slate-400">Migrated from user group #2</p>
+        </div>
+                  <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">Active</span>
+              </div>
+
+      <dl class="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Users</dt><dd class="font-bold text-slate-700">13</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Perms</dt><dd class="font-bold text-slate-700">235</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Modules</dt><dd class="font-bold text-slate-700">235</dd></div>
+      </dl>
+
+      <div class="mt-4 flex gap-2 border-t border-slate-100 pt-4">
+                  <a href="permissions.html"
+             class="flex-1 rounded-lg bg-brand-50 px-3 py-2 text-center text-xs font-semibold text-brand-700 hover:bg-brand-100">Permissions</a>
+                          <a href="role-form.html"
+             class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-center text-xs font-medium text-slate-600 hover:bg-slate-50">Edit</a>
+                          <form method="post" action="#" onsubmit="return confirm('Delete role &quot;Data Entry User&quot;? Its permission grants will be removed.')">
+            <input type="hidden" name="_csrf" value="d3b2409e0a77083ec3b63a8b0bc2c64537efcd9538297517593c52831f368ef4">            <input type="hidden" name="id" value="2">
+            <button class="rounded-lg border border-rose-200 px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50">Delete</button>
+          </form>
+              </div>
+    </div>
+      <div class="flex flex-col rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60 transition hover:shadow-md">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="font-semibold text-slate-800">Officer of DA                      </h3>
+          <p class="mt-0.5 text-xs text-slate-400">Migrated from user group #3</p>
+        </div>
+                  <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">Active</span>
+              </div>
+
+      <dl class="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Users</dt><dd class="font-bold text-slate-700">10</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Perms</dt><dd class="font-bold text-slate-700">48</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Modules</dt><dd class="font-bold text-slate-700">12</dd></div>
+      </dl>
+
+      <div class="mt-4 flex gap-2 border-t border-slate-100 pt-4">
+                  <a href="permissions.html"
+             class="flex-1 rounded-lg bg-brand-50 px-3 py-2 text-center text-xs font-semibold text-brand-700 hover:bg-brand-100">Permissions</a>
+                          <a href="role-form.html"
+             class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-center text-xs font-medium text-slate-600 hover:bg-slate-50">Edit</a>
+                          <form method="post" action="#" onsubmit="return confirm('Delete role &quot;Officer of DA&quot;? Its permission grants will be removed.')">
+            <input type="hidden" name="_csrf" value="d3b2409e0a77083ec3b63a8b0bc2c64537efcd9538297517593c52831f368ef4">            <input type="hidden" name="id" value="3">
+            <button class="rounded-lg border border-rose-200 px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50">Delete</button>
+          </form>
+              </div>
+    </div>
+      <div class="flex flex-col rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60 transition hover:shadow-md">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="font-semibold text-slate-800">Pension                      </h3>
+          <p class="mt-0.5 text-xs text-slate-400">Migrated from user group #5</p>
+        </div>
+                  <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">Active</span>
+              </div>
+
+      <dl class="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Users</dt><dd class="font-bold text-slate-700">0</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Perms</dt><dd class="font-bold text-slate-700">0</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Modules</dt><dd class="font-bold text-slate-700">0</dd></div>
+      </dl>
+
+      <div class="mt-4 flex gap-2 border-t border-slate-100 pt-4">
+                  <a href="permissions.html"
+             class="flex-1 rounded-lg bg-brand-50 px-3 py-2 text-center text-xs font-semibold text-brand-700 hover:bg-brand-100">Permissions</a>
+                          <a href="role-form.html"
+             class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-center text-xs font-medium text-slate-600 hover:bg-slate-50">Edit</a>
+                          <form method="post" action="#" onsubmit="return confirm('Delete role &quot;Pension&quot;? Its permission grants will be removed.')">
+            <input type="hidden" name="_csrf" value="d3b2409e0a77083ec3b63a8b0bc2c64537efcd9538297517593c52831f368ef4">            <input type="hidden" name="id" value="5">
+            <button class="rounded-lg border border-rose-200 px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50">Delete</button>
+          </form>
+              </div>
+    </div>
+      <div class="flex flex-col rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60 transition hover:shadow-md">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="font-semibold text-slate-800">Section of DA                      </h3>
+          <p class="mt-0.5 text-xs text-slate-400">Migrated from user group #4</p>
+        </div>
+                  <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">Active</span>
+              </div>
+
+      <dl class="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Users</dt><dd class="font-bold text-slate-700">10</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Perms</dt><dd class="font-bold text-slate-700">0</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Modules</dt><dd class="font-bold text-slate-700">0</dd></div>
+      </dl>
+
+      <div class="mt-4 flex gap-2 border-t border-slate-100 pt-4">
+                  <a href="permissions.html"
+             class="flex-1 rounded-lg bg-brand-50 px-3 py-2 text-center text-xs font-semibold text-brand-700 hover:bg-brand-100">Permissions</a>
+                          <a href="role-form.html"
+             class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-center text-xs font-medium text-slate-600 hover:bg-slate-50">Edit</a>
+                          <form method="post" action="#" onsubmit="return confirm('Delete role &quot;Section of DA&quot;? Its permission grants will be removed.')">
+            <input type="hidden" name="_csrf" value="d3b2409e0a77083ec3b63a8b0bc2c64537efcd9538297517593c52831f368ef4">            <input type="hidden" name="id" value="4">
+            <button class="rounded-lg border border-rose-200 px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50">Delete</button>
+          </form>
+              </div>
+    </div>
+      <div class="flex flex-col rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60 transition hover:shadow-md">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="font-semibold text-slate-800">System Administrator                      </h3>
+          <p class="mt-0.5 text-xs text-slate-400">Migrated from user group #1</p>
+        </div>
+                  <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">Active</span>
+              </div>
+
+      <dl class="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Users</dt><dd class="font-bold text-slate-700">5</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Perms</dt><dd class="font-bold text-slate-700">940</dd></div>
+        <div class="rounded-lg bg-slate-50 py-2"><dt class="text-xs text-slate-400">Modules</dt><dd class="font-bold text-slate-700">235</dd></div>
+      </dl>
+
+      <div class="mt-4 flex gap-2 border-t border-slate-100 pt-4">
+                  <a href="permissions.html"
+             class="flex-1 rounded-lg bg-brand-50 px-3 py-2 text-center text-xs font-semibold text-brand-700 hover:bg-brand-100">Permissions</a>
+                          <a href="role-form.html"
+             class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-center text-xs font-medium text-slate-600 hover:bg-slate-50">Edit</a>
+                          <form method="post" action="#" onsubmit="return confirm('Delete role &quot;System Administrator&quot;? Its permission grants will be removed.')">
+            <input type="hidden" name="_csrf" value="d3b2409e0a77083ec3b63a8b0bc2c64537efcd9538297517593c52831f368ef4">            <input type="hidden" name="id" value="1">
+            <button class="rounded-lg border border-rose-200 px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50">Delete</button>
+          </form>
+              </div>
+    </div>
+  </div>
+    </div>
+  </main>
+</div>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>document.addEventListener('alpine:init',()=>Alpine.data('collapse',()=>({})))</script>
+</body>
+</html>
